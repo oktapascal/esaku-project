@@ -1,0 +1,5 @@
+/.idea
+.env.dev
+.env.local
+.env
+application.log
