@@ -2,7 +2,7 @@ package exceptions
 
 import (
 	"esaku-project/helpers"
-	"esaku-project/models/web"
+	"esaku-project/web"
 	"fmt"
 	"github.com/go-playground/validator/v10"
 	"net/http"
