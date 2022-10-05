@@ -1,4 +1,4 @@
-package web
+package helpers
 
 type JsonResponse struct {
 	Code   int         `json:"code"`

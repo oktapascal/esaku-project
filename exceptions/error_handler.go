@@ -2,7 +2,6 @@ package exceptions
 
 import (
 	"esaku-project/helpers"
-	"esaku-project/web"
 	"fmt"
 	"github.com/go-playground/validator/v10"
 	"net/http"
@@ -29,7 +28,7 @@ func badRequestError(writer http.ResponseWriter, request *http.Request, err inte
 		writer.Header().Set("Content-Type", "application/json")
 		writer.WriteHeader(http.StatusBadRequest)
 
-		webResponse := web.JsonResponse{
+		webResponse := helpers.JsonResponse{
 			Code:   http.StatusBadRequest,
 			Status: "BAD_REQUEST",
 			Data:   exception.Error,
@@ -50,7 +49,7 @@ func validationErrors(writer http.ResponseWriter, request *http.Request, err int
 		writer.Header().Set("Content-Type", "application/json")
 		writer.WriteHeader(http.StatusBadRequest)
 
-		var errorFields []web.FieldError
+		var errorFields []helpers.FieldError
 		var msg string
 
 		for _, err := range err.(validator.ValidationErrors) {
@@ -61,7 +60,7 @@ func validationErrors(writer http.ResponseWriter, request *http.Request, err int
 				msg = exception.Error()
 			}
 
-			errorField := web.FieldError{
+			errorField := helpers.FieldError{
 				Param:   err.Field(),
 				Message: msg,
 			}
@@ -69,7 +68,7 @@ func validationErrors(writer http.ResponseWriter, request *http.Request, err int
 			errorFields = append(errorFields, errorField)
 		}
 
-		webResponse := web.JsonResponse{
+		webResponse := helpers.JsonResponse{
 			Code:   http.StatusBadRequest,
 			Status: "BAD_REQUEST",
 			Data:   errorFields,
@@ -88,7 +87,7 @@ func notFoundError(writer http.ResponseWriter, request *http.Request, err interf
 		writer.Header().Set("Content-Type", "application/json")
 		writer.WriteHeader(http.StatusNotFound)
 
-		webResponse := web.JsonResponse{
+		webResponse := helpers.JsonResponse{
 			Code:   http.StatusNotFound,
 			Status: "NOT_FOUND",
 			Data:   exception.Error,
@@ -109,7 +108,7 @@ func internalServerError(writer http.ResponseWriter, request *http.Request, err 
 	logger := helpers.WriteLogging()
 
 	logger.Error(err)
-	webResponse := web.JsonResponse{
+	webResponse := helpers.JsonResponse{
 		Code:   http.StatusInternalServerError,
 		Status: "INTERNAL_SERVER_ERROR",
 		Data:   err,

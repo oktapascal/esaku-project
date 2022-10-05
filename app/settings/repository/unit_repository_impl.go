@@ -4,7 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"esaku-project/app/settings/domain"
+	"esaku-project/app/settings/models/domain"
 	"esaku-project/helpers"
 )
 

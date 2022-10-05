@@ -1,4 +1,4 @@
-package web
+package helpers
 
 type FieldError struct {
 	Param   string
