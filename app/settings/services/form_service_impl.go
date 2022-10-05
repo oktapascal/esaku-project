@@ -45,7 +45,7 @@ func (service *FormServiceImpl) Save(ctx context.Context, request web.FormSaveRe
 	return web.ToFormResponse(form)
 }
 
-func (service *FormServiceImpl) Update(ctx context.Context, request web.FormSaveRequest) web.FormResponse {
+func (service *FormServiceImpl) Update(ctx context.Context, request web.FormUpdateRequest) web.FormResponse {
 	err := service.Validate.Struct(request)
 
 	helpers.PanicIfError(err)

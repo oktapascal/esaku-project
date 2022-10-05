@@ -44,7 +44,7 @@ func (service *KelompokMenuServiceImpl) Save(ctx context.Context, request web.Ke
 	return web.ToKelompokMenuResponse(klpMenu)
 }
 
-func (service *KelompokMenuServiceImpl) Update(ctx context.Context, request web.KelompokMenuSaveRequest) web.KelompokMenuResponse {
+func (service *KelompokMenuServiceImpl) Update(ctx context.Context, request web.KelompokMenuUpdateRequest) web.KelompokMenuResponse {
 	err := service.Validate.Struct(request)
 
 	helpers.PanicIfError(err)
