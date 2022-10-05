@@ -8,6 +8,7 @@ import (
 	"esaku-project/configs/databases"
 	"esaku-project/configs/routes"
 	"esaku-project/helpers"
+	_ "github.com/denisenkom/go-mssqldb"
 	"github.com/go-playground/validator/v10"
 	"net/http"
 )

@@ -15,7 +15,7 @@ func InitializeSettingsRoutes(
 	router.HandleFunc("/kelompok-menu", kelompokMenuController.FindAll).Methods("GET")
 	router.HandleFunc("/kelompok-menu/{kodeKlp}", kelompokMenuController.FindById).Methods("GET")
 	router.HandleFunc("/kelompok-menu", kelompokMenuController.Save).Methods("POST")
-	router.HandleFunc("/kelompok-menu/{kodeKlp", kelompokMenuController.Update).Methods("PUT")
+	router.HandleFunc("/kelompok-menu/{kodeKlp}", kelompokMenuController.Update).Methods("PUT")
 	router.HandleFunc("/kelompok-menu/{kodeKlp}", kelompokMenuController.Delete).Methods("DELETE")
 
 	// Form
