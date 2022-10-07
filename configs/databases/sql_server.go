@@ -9,11 +9,13 @@ import (
 )
 
 func NewSqlServer(configuration configs.Config) *sql.DB {
-	database := configuration.Get("DB_SQL_SERVER_DATABASE")
-	port := configuration.Get("DB_SQL_SERVER_PORT")
-	host := configuration.Get("DB_SQL_SERVER_HOST")
-	username := configuration.Get("DB_SQL_SERVER_USERNAME")
-	password := configuration.Get("DB_SQL_SERVER_PASSWORD")
+	var (
+		database = configuration.Get("DB_SQL_SERVER_DATABASE")
+		port     = configuration.Get("DB_SQL_SERVER_PORT")
+		host     = configuration.Get("DB_SQL_SERVER_HOST")
+		username = configuration.Get("DB_SQL_SERVER_USERNAME")
+		password = configuration.Get("DB_SQL_SERVER_PASSWORD")
+	)
 
 	conn := fmt.Sprintf("sqlserver://%s:%s@%s:%s?database=%s", username, password, host, port, database)
 	db, err := sql.Open("sqlserver", conn)

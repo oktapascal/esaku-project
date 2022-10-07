@@ -11,9 +11,11 @@ import (
 )
 
 func NewSessionAws(configuration configs.Config) *s3.Client {
-	accessKey := configuration.Get("AWS_ACCESS_KEY_ID")
-	accessSecretKey := configuration.Get("AWS_SECRET_ACCESS_KEY")
-	region := configuration.Get("AWS_REGION")
+	var (
+		accessKey       = configuration.Get("AWS_ACCESS_KEY_ID")
+		accessSecretKey = configuration.Get("AWS_SECRET_ACCESS_KEY")
+		region          = configuration.Get("AWS_REGION")
+	)
 
 	cfg, err := config.LoadDefaultConfig(
 		context.TODO(),
