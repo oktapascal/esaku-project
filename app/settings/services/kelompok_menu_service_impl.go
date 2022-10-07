@@ -27,11 +27,9 @@ func NewKelompokMenuServiceImpl(kelompokMenuRepository repository.KelompokMenuRe
 
 func (service *KelompokMenuServiceImpl) Save(ctx context.Context, request web.KelompokMenuSaveRequest) web.KelompokMenuResponse {
 	err := service.Validate.Struct(request)
-
 	helpers.PanicIfError(err)
 
 	tx, err := service.Db.Begin()
-
 	defer helpers.CommitOrRollback(tx, err)
 
 	klpMenu := domain.KelompokMenu{
@@ -46,11 +44,9 @@ func (service *KelompokMenuServiceImpl) Save(ctx context.Context, request web.Ke
 
 func (service *KelompokMenuServiceImpl) Update(ctx context.Context, request web.KelompokMenuUpdateRequest) web.KelompokMenuResponse {
 	err := service.Validate.Struct(request)
-
 	helpers.PanicIfError(err)
 
 	tx, err := service.Db.Begin()
-
 	defer helpers.CommitOrRollback(tx, err)
 
 	klpMenu, err := service.KelompokMenuRepository.FindById(ctx, tx, request.KodeKlp)
@@ -68,7 +64,6 @@ func (service *KelompokMenuServiceImpl) Update(ctx context.Context, request web.
 
 func (service *KelompokMenuServiceImpl) Delete(ctx context.Context, kodeKlp string) {
 	tx, err := service.Db.Begin()
-
 	defer helpers.CommitOrRollback(tx, err)
 
 	klpMenu, err := service.KelompokMenuRepository.FindById(ctx, tx, kodeKlp)
@@ -82,7 +77,6 @@ func (service *KelompokMenuServiceImpl) Delete(ctx context.Context, kodeKlp stri
 
 func (service *KelompokMenuServiceImpl) FindById(ctx context.Context, kodeKlp string) web.KelompokMenuResponse {
 	tx, err := service.Db.Begin()
-
 	defer helpers.CommitOrRollback(tx, err)
 
 	klpMenu, err := service.KelompokMenuRepository.FindById(ctx, tx, kodeKlp)
@@ -96,7 +90,6 @@ func (service *KelompokMenuServiceImpl) FindById(ctx context.Context, kodeKlp st
 
 func (service *KelompokMenuServiceImpl) FindAll(ctx context.Context) []web.KelompokMenuResponse {
 	tx, err := service.Db.Begin()
-
 	defer helpers.CommitOrRollback(tx, err)
 
 	klpMenus := service.KelompokMenuRepository.FindAll(ctx, tx)

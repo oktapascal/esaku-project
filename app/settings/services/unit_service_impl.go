@@ -27,11 +27,9 @@ func NewUnitServiceImpl(unitRepository repository.UnitRepository, db *sql.DB, va
 
 func (service *UnitServiceImpl) Save(ctx context.Context, request web.UnitSaveRequest) web.UnitResponse {
 	err := service.Validate.Struct(request)
-
 	helpers.PanicIfError(err)
 
 	tx, err := service.Db.Begin()
-
 	defer helpers.CommitOrRollback(tx, err)
 
 	kodeLokasi := "99"
@@ -49,11 +47,9 @@ func (service *UnitServiceImpl) Save(ctx context.Context, request web.UnitSaveRe
 
 func (service *UnitServiceImpl) Update(ctx context.Context, request web.UnitUpdateRequest) web.UnitResponse {
 	err := service.Validate.Struct(request)
-
 	helpers.PanicIfError(err)
 
 	tx, err := service.Db.Begin()
-
 	defer helpers.CommitOrRollback(tx, err)
 
 	kodeLokasi := "99"
@@ -74,7 +70,6 @@ func (service *UnitServiceImpl) Update(ctx context.Context, request web.UnitUpda
 
 func (service *UnitServiceImpl) Delete(ctx context.Context, kodeUnit string) {
 	tx, err := service.Db.Begin()
-
 	defer helpers.CommitOrRollback(tx, err)
 
 	kodeLokasi := "99"
@@ -89,7 +84,6 @@ func (service *UnitServiceImpl) Delete(ctx context.Context, kodeUnit string) {
 
 func (service *UnitServiceImpl) FindById(ctx context.Context, kodeUnit string) web.UnitResponse {
 	tx, err := service.Db.Begin()
-
 	defer helpers.CommitOrRollback(tx, err)
 
 	kodeLokasi := "99"
@@ -104,7 +98,6 @@ func (service *UnitServiceImpl) FindById(ctx context.Context, kodeUnit string) w
 
 func (service *UnitServiceImpl) FindAll(ctx context.Context) []web.UnitResponse {
 	tx, err := service.Db.Begin()
-
 	defer helpers.CommitOrRollback(tx, err)
 
 	kodeLokasi := "99"

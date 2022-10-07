@@ -27,11 +27,9 @@ func NewFormServiceImpl(formRepository repository.FormRepository, db *sql.DB, va
 
 func (service *FormServiceImpl) Save(ctx context.Context, request web.FormSaveRequest) web.FormResponse {
 	err := service.Validate.Struct(request)
-
 	helpers.PanicIfError(err)
 
 	tx, err := service.Db.Begin()
-
 	defer helpers.CommitOrRollback(tx, err)
 
 	form := domain.Form{
@@ -47,11 +45,9 @@ func (service *FormServiceImpl) Save(ctx context.Context, request web.FormSaveRe
 
 func (service *FormServiceImpl) Update(ctx context.Context, request web.FormUpdateRequest) web.FormResponse {
 	err := service.Validate.Struct(request)
-
 	helpers.PanicIfError(err)
 
 	tx, err := service.Db.Begin()
-
 	defer helpers.CommitOrRollback(tx, err)
 
 	form, err := service.FormRepository.FindById(ctx, tx, request.KodeForm)
@@ -70,7 +66,6 @@ func (service *FormServiceImpl) Update(ctx context.Context, request web.FormUpda
 
 func (service *FormServiceImpl) Delete(ctx context.Context, kodeForm string) {
 	tx, err := service.Db.Begin()
-
 	defer helpers.CommitOrRollback(tx, err)
 
 	form, err := service.FormRepository.FindById(ctx, tx, kodeForm)
@@ -84,7 +79,6 @@ func (service *FormServiceImpl) Delete(ctx context.Context, kodeForm string) {
 
 func (service *FormServiceImpl) FindById(ctx context.Context, kodeForm string) web.FormResponse {
 	tx, err := service.Db.Begin()
-
 	defer helpers.CommitOrRollback(tx, err)
 
 	form, err := service.FormRepository.FindById(ctx, tx, kodeForm)
@@ -98,7 +92,6 @@ func (service *FormServiceImpl) FindById(ctx context.Context, kodeForm string) w
 
 func (service *FormServiceImpl) FindAll(ctx context.Context) []web.FormResponse {
 	tx, err := service.Db.Begin()
-
 	defer helpers.CommitOrRollback(tx, err)
 
 	forms := service.FormRepository.FindAll(ctx, tx)

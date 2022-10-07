@@ -11,6 +11,6 @@ type Karyawan struct {
 	NoTelp     string
 	NoHp       string
 	Email      string
-	Foto       []byte
+	Foto       string
 	Unit
 }
