@@ -10,6 +10,7 @@ func InitializeSettingsRoutes(
 	kelompokMenuController controllers.KelompokMenuController,
 	formController controllers.FormController,
 	unitController controllers.UnitController,
+	karyawanController controllers.KaryawanController,
 ) {
 	// Kelompok Menu
 	router.HandleFunc("/kelompok-menu", kelompokMenuController.FindAll).Methods("GET")
@@ -31,4 +32,12 @@ func InitializeSettingsRoutes(
 	router.HandleFunc("/unit", unitController.Save).Methods("POST")
 	router.HandleFunc("/unit/{kodeUnit}", unitController.Update).Methods("PUT")
 	router.HandleFunc("/unit/{kodeUnit}", unitController.Delete).Methods("DELETE")
+
+	//	Karyawan
+	router.HandleFunc("/karyawan", karyawanController.FindAll).Methods("GET")
+	router.HandleFunc("karyawan/{nik}", karyawanController.FindById).Methods("GET")
+	router.HandleFunc("/karyawan", karyawanController.Save).Methods("POST")
+	router.HandleFunc("/karyawan-upload", karyawanController.UploadImage).Methods("POST")
+	router.HandleFunc("/karyawan/{nik}", karyawanController.Update).Methods("PUT")
+	router.HandleFunc("/karyawan/{nik}", karyawanController.Delete).Methods("DELETE")
 }

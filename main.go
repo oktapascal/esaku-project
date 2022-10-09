@@ -7,6 +7,7 @@ import (
 	"esaku-project/configs"
 	"esaku-project/configs/databases"
 	"esaku-project/configs/routes"
+	"esaku-project/configs/storages"
 	"esaku-project/helpers"
 	_ "github.com/denisenkom/go-mssqldb"
 	"github.com/go-playground/validator/v10"
@@ -17,6 +18,7 @@ func main() {
 	appConfig := configs.New(".env.dev")
 	validate := validator.New()
 	sqlServer := databases.NewSqlServer(appConfig)
+	awsS3 := storages.NewSessionAws(appConfig)
 
 	kelompokMenuRepository := repository.NewKelompokMenuRepositoryImpl()
 	kelompokMenuService := services.NewKelompokMenuServiceImpl(kelompokMenuRepository, sqlServer, validate)
@@ -30,10 +32,15 @@ func main() {
 	unitService := services.NewUnitServiceImpl(unitRepository, sqlServer, validate)
 	unitController := controllers.NewUnitControllerImpl(unitService)
 
+	karyawanRepository := repository.NewKaryawanRepositoryImpl()
+	karyawanService := services.NewKaryawanServiceImpl(karyawanRepository, sqlServer, validate, awsS3)
+	karyawanController := controllers.NewKaryawanControllerImpl(karyawanService)
+
 	router := routes.NewRouter(
 		kelompokMenuController,
 		formController,
 		unitController,
+		karyawanController,
 	)
 
 	server := http.Server{
