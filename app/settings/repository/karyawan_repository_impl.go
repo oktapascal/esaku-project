@@ -21,7 +21,6 @@ func (repository *KaryawanRepositoryImpl) Save(ctx context.Context, tx *sql.Tx, 
 
 	_, err := tx.ExecContext(ctx, SQL, karyawan.Nik, karyawan.KodeLokasi, karyawan.Nama, karyawan.KodeUnit,
 		karyawan.FlagAktif, karyawan.Jabatan, karyawan.Alamat, karyawan.NoTelp, karyawan.NoHp, karyawan.Email)
-
 	helpers.PanicIfError(err)
 
 	return karyawan
@@ -34,7 +33,6 @@ func (repository *KaryawanRepositoryImpl) Update(ctx context.Context, tx *sql.Tx
 
 	_, err := tx.ExecContext(ctx, SQL, karyawan.KodeLokasi, karyawan.Nama, karyawan.KodeUnit,
 		karyawan.FlagAktif, karyawan.Jabatan, karyawan.Alamat, karyawan.NoTelp, karyawan.NoHp, karyawan.Email, karyawan.Nik)
-
 	helpers.PanicIfError(err)
 
 	return karyawan
@@ -44,7 +42,6 @@ func (repository *KaryawanRepositoryImpl) Delete(ctx context.Context, tx *sql.Tx
 	SQL := "delete from karyawan where nik = @p1"
 
 	_, err := tx.ExecContext(ctx, SQL, karyawan.Nik)
-
 	helpers.PanicIfError(err)
 }
 
@@ -56,7 +53,6 @@ func (repository *KaryawanRepositoryImpl) FindById(ctx context.Context, tx *sql.
 	where a.nik = @p1 and a.kode_lokasi = @p2`
 
 	rows, err := tx.QueryContext(ctx, SQL, nik, kodeLokasi)
-
 	helpers.PanicIfError(err)
 	//noinspection GoUnhandledErrorResult
 	defer rows.Close()
@@ -82,7 +78,6 @@ func (repository *KaryawanRepositoryImpl) FindAll(ctx context.Context, tx *sql.T
 	from karyawan
 	where kode_lokasi = @p1`
 	rows, err := tx.QueryContext(ctx, SQL, kodeLokasi)
-
 	helpers.PanicIfError(err)
 	//noinspection GoUnhandledErrorResult
 	defer rows.Close()
@@ -107,7 +102,6 @@ func (repository *KaryawanRepositoryImpl) UploadImage(ctx context.Context, tx *s
 	SQL := "update karyawan set foto = @p1 where nik = @p2"
 
 	_, err := tx.ExecContext(ctx, SQL, karyawan.Foto, karyawan.Nik)
-
 	helpers.PanicIfError(err)
 
 	return karyawan

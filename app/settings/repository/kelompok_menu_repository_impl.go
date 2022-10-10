@@ -19,7 +19,6 @@ func (repository *KelompokMenuRepositoryImpl) Save(ctx context.Context, tx *sql.
 	SQL := "insert into menu_klp (kode_klp, nama) values (@p1, @p2)"
 
 	_, err := tx.ExecContext(ctx, SQL, klpMenu.KodeKlp, klpMenu.Nama)
-
 	helpers.PanicIfError(err)
 
 	return klpMenu
@@ -29,7 +28,6 @@ func (repository *KelompokMenuRepositoryImpl) Update(ctx context.Context, tx *sq
 	SQL := "update menu_klp set nama = @p1 where kode_klp = @p2"
 
 	_, err := tx.ExecContext(ctx, SQL, klpMenu.Nama, klpMenu.KodeKlp)
-
 	helpers.PanicIfError(err)
 
 	return klpMenu
@@ -39,14 +37,12 @@ func (repository *KelompokMenuRepositoryImpl) Delete(ctx context.Context, tx *sq
 	SQL := "delete from menu_klp where kode_klp = @p1"
 
 	_, err := tx.ExecContext(ctx, SQL, klpMenu.KodeKlp)
-
 	helpers.PanicIfError(err)
 }
 
 func (repository *KelompokMenuRepositoryImpl) FindById(ctx context.Context, tx *sql.Tx, kodeKlp string) (domain.KelompokMenu, error) {
 	SQL := "select kode_klp, nama from menu_klp where kode_klp = @p1"
 	rows, err := tx.QueryContext(ctx, SQL, kodeKlp)
-
 	helpers.PanicIfError(err)
 	//noinspection GoUnhandledErrorResult
 	defer rows.Close()
@@ -65,7 +61,6 @@ func (repository *KelompokMenuRepositoryImpl) FindById(ctx context.Context, tx *
 func (repository *KelompokMenuRepositoryImpl) FindAll(ctx context.Context, tx *sql.Tx) []domain.KelompokMenu {
 	SQL := "select kode_klp, nama from menu_klp"
 	rows, err := tx.QueryContext(ctx, SQL)
-
 	helpers.PanicIfError(err)
 	//noinspection GoUnhandledErrorResult
 	defer rows.Close()
