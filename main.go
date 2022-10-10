@@ -36,11 +36,16 @@ func main() {
 	karyawanService := services.NewKaryawanServiceImpl(karyawanRepository, sqlServer, validate, awsS3)
 	karyawanController := controllers.NewKaryawanControllerImpl(karyawanService)
 
+	aksesRepository := repository.NewHakAksesRepositoryImpl()
+	aksesService := services.NewHakAksesServiceImpl(aksesRepository, sqlServer, validate)
+	aksesController := controllers.NewHakAksesControllerImpl(aksesService)
+
 	router := routes.NewRouter(
 		kelompokMenuController,
 		formController,
 		unitController,
 		karyawanController,
+		aksesController,
 	)
 
 	server := http.Server{
