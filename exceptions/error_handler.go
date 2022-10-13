@@ -8,6 +8,10 @@ import (
 )
 
 func ErrorHandler(writer http.ResponseWriter, request *http.Request, err interface{}) {
+	if unauthorizedError(writer, request, err) {
+		return
+	}
+
 	if badRequestError(writer, request, err) {
 		return
 	}
@@ -20,6 +24,26 @@ func ErrorHandler(writer http.ResponseWriter, request *http.Request, err interfa
 	}
 
 	internalServerError(writer, request, err)
+}
+
+func unauthorizedError(writer http.ResponseWriter, request *http.Request, err interface{}) bool {
+	exception, ok := err.(ErrorUnauthorized)
+
+	if ok {
+		writer.Header().Set("Content-Type", "application/json")
+		writer.WriteHeader(http.StatusUnauthorized)
+
+		webResponse := helpers.JsonResponse{
+			Code:   http.StatusUnauthorized,
+			Status: "UNAUTHORIZED",
+			Data:   exception.Error,
+		}
+
+		helpers.WriteToResponseBodyJson(writer, webResponse)
+		return true
+	} else {
+		return false
+	}
 }
 
 func badRequestError(writer http.ResponseWriter, request *http.Request, err interface{}) bool {
