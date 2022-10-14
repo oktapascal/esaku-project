@@ -11,6 +11,7 @@ import (
 	"esaku-project/helpers"
 	_ "github.com/denisenkom/go-mssqldb"
 	"github.com/go-playground/validator/v10"
+	"github.com/gorilla/handlers"
 	"net/http"
 )
 
@@ -48,9 +49,14 @@ func main() {
 		aksesController,
 	)
 
+	// CORS
+	credentials := handlers.AllowCredentials()
+	methods := handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE"})
+	origins := handlers.AllowedOrigins([]string{"http://localhost:3000"})
+
 	server := http.Server{
 		Addr:    "localhost:5000",
-		Handler: router,
+		Handler: handlers.CORS(credentials, methods, origins)(router),
 	}
 
 	err := server.ListenAndServe()
