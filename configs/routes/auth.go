@@ -1,6 +1,13 @@
 package routes
 
-import "github.com/gorilla/mux"
+import (
+	controllers2 "esaku-project/app/auths/controllers"
+	"github.com/gorilla/mux"
+)
 
-func InitializeAuthRoutes(router *mux.Router) {
+func InitializeAuthRoutes(
+	router *mux.Router,
+	loginController controllers2.LoginController,
+) {
+	router.HandleFunc("/login", loginController.Login).Methods("POST")
 }

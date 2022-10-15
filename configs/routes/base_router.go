@@ -1,6 +1,7 @@
 package routes
 
 import (
+	controllers2 "esaku-project/app/auths/controllers"
 	"esaku-project/app/settings/controllers"
 	"esaku-project/middlewares"
 	"github.com/gorilla/mux"
@@ -12,13 +13,17 @@ func NewRouter(
 	unitController controllers.UnitController,
 	karyawanController controllers.KaryawanController,
 	aksesController controllers.HakAksesController,
+	loginController controllers2.LoginController,
 ) *mux.Router {
 	router := mux.NewRouter()
 	router.StrictSlash(true)
 	router.Use(middlewares.CustomError)
 
 	auth := router.PathPrefix("/api/esaku-auth").Subrouter()
-	InitializeAuthRoutes(auth)
+	InitializeAuthRoutes(
+		auth,
+		loginController,
+	)
 
 	setting := router.PathPrefix("/api/esaku-setting").Subrouter()
 	setting.Use(middlewares.MiddlewareCookie)

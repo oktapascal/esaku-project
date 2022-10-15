@@ -1,6 +1,9 @@
 package main
 
 import (
+	controllers2 "esaku-project/app/auths/controllers"
+	repository2 "esaku-project/app/auths/repository"
+	services2 "esaku-project/app/auths/services"
 	"esaku-project/app/settings/controllers"
 	"esaku-project/app/settings/repository"
 	"esaku-project/app/settings/services"
@@ -41,12 +44,17 @@ func main() {
 	aksesService := services.NewHakAksesServiceImpl(aksesRepository, sqlServer, validate)
 	aksesController := controllers.NewHakAksesControllerImpl(aksesService)
 
+	loginRepository := repository2.NewLoginRepositoryImpl()
+	loginService := services2.NewLoginServiceImpl(loginRepository, sqlServer, validate)
+	loginController := controllers2.NewLoginControllerImpl(loginService)
+
 	router := routes.NewRouter(
 		kelompokMenuController,
 		formController,
 		unitController,
 		karyawanController,
 		aksesController,
+		loginController,
 	)
 
 	// CORS
