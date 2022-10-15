@@ -1,6 +1,8 @@
 package domain
 
 type Login struct {
-	Token        string
-	RefreshToken string
+	Nik        string
+	NamaUser   string
+	Password   string
+	KodeLokasi string
 }
