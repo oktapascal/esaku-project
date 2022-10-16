@@ -24,8 +24,14 @@ func (controller *LoginControllerImpl) Login(writer http.ResponseWriter, request
 	webResponse := helpers.JsonResponse{
 		Code:   http.StatusOK,
 		Status: "OK",
-		Data:   loginResponse,
+		Data: map[string]string{
+			"token":         loginResponse.Token,
+			"refresh_token": loginResponse.RefreshToken,
+		},
 	}
+
+	helpers.SetCookieToken(writer, loginResponse.CookieAccess, loginResponse.Token, loginResponse.ExpirationAccess)
+	helpers.SetCookieToken(writer, loginResponse.CookieRefresh, loginResponse.RefreshToken, loginResponse.ExpirationRefresh)
 
 	helpers.WriteToResponseBodyJson(writer, webResponse)
 }
