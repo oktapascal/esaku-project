@@ -11,14 +11,12 @@ func ErrorHandler(writer http.ResponseWriter, request *http.Request, err interfa
 	if unauthorizedError(writer, request, err) {
 		return
 	}
-
 	if badRequestError(writer, request, err) {
 		return
 	}
 	if notFoundError(writer, request, err) {
 		return
 	}
-
 	if validationErrors(writer, request, err) {
 		return
 	}

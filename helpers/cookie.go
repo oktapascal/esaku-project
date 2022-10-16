@@ -12,6 +12,7 @@ func SetCookieToken(writer http.ResponseWriter, cookieName string, cookieValue s
 	cookie.Value = cookieValue
 	cookie.Expires = expiration
 	cookie.HttpOnly = true
+	cookie.Path = "/"
 
 	http.SetCookie(writer, cookie)
 }

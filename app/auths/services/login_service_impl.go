@@ -42,6 +42,12 @@ func (service *LoginServiceImpl) Login(ctx context.Context, request web.LoginReq
 		panic(exceptions.NewErrorNotFound(err.Error()))
 	}
 
+	checkPassword := helpers.CheckPasswordHash(request.Password, login.Password)
+
+	if !checkPassword {
+		panic(exceptions.NewErrorBadRequest("password incorrect"))
+	}
+
 	jwtSecret := service.Config.Get("JWT_KEY_TOKEN")
 	jwtRefresh := service.Config.Get("JWT_REFRESH_KEY_TOKEN")
 	cookieAccess := service.Config.Get("COOKIE_ACCESS_TOKEN")
