@@ -10,4 +10,5 @@ func InitializeAuthRoutes(
 	loginController controllers2.LoginController,
 ) {
 	router.HandleFunc("/login", loginController.Login).Methods("POST")
+	router.HandleFunc("/logout", loginController.Logout).Methods("POST")
 }

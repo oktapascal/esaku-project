@@ -68,3 +68,10 @@ func (service *LoginServiceImpl) Login(ctx context.Context, request web.LoginReq
 
 	return web.ToLoginResponse(login)
 }
+
+func (service *LoginServiceImpl) Logout(ctx context.Context) (string, string) {
+	cookieAccess := service.Config.Get("COOKIE_ACCESS_TOKEN")
+	cookieRefresh := service.Config.Get("COOKIE_ACCESS_REFRESH_TOKEN")
+
+	return cookieAccess, cookieRefresh
+}
