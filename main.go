@@ -20,6 +20,7 @@ import (
 
 func main() {
 	appConfig := configs.New(".env.dev")
+	jwtConfig := helpers.NewJwt()
 	validate := validator.New()
 	sqlServer := databases.NewSqlServer(appConfig)
 	awsS3 := storages.NewSessionAws(appConfig)
@@ -45,7 +46,7 @@ func main() {
 	aksesController := controllers.NewHakAksesControllerImpl(aksesService)
 
 	loginRepository := repository2.NewLoginRepositoryImpl()
-	loginService := services2.NewLoginServiceImpl(loginRepository, sqlServer, validate)
+	loginService := services2.NewLoginServiceImpl(loginRepository, sqlServer, validate, appConfig, jwtConfig)
 	loginController := controllers2.NewLoginControllerImpl(loginService)
 
 	router := routes.NewRouter(

@@ -62,3 +62,7 @@ func (config *ConfigJwtImpl) GenerateJwtRefreshToken(ctx context.Context, secret
 
 	return tokenStr, expiration, nil
 }
+
+func NewJwt() ConfigJwt {
+	return &ConfigJwtImpl{}
+}
