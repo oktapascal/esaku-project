@@ -8,6 +8,7 @@ import (
 	"esaku-project/app/settings/repository"
 	"esaku-project/exceptions"
 	"esaku-project/helpers"
+	"esaku-project/types"
 	"github.com/go-playground/validator/v10"
 )
 
@@ -32,7 +33,11 @@ func (service *UnitServiceImpl) Save(ctx context.Context, request web.UnitSaveRe
 	tx, err := service.Db.Begin()
 	defer helpers.CommitOrRollback(tx, err)
 
-	kodeLokasi := "99"
+	values := ctx.Value("pic")
+	casted := values.(types.M)
+
+	kodeLokasi := casted["kode_lokasi"].(string)
+
 	unit := domain.Unit{
 		KodeUnit:   request.KodeUnit,
 		KodeLokasi: kodeLokasi,
@@ -52,7 +57,10 @@ func (service *UnitServiceImpl) Update(ctx context.Context, request web.UnitUpda
 	tx, err := service.Db.Begin()
 	defer helpers.CommitOrRollback(tx, err)
 
-	kodeLokasi := "99"
+	values := ctx.Value("pic")
+	casted := values.(types.M)
+
+	kodeLokasi := casted["kode_lokasi"].(string)
 	unit, err := service.UnitRepository.FindById(ctx, tx, request.KodeUnit, kodeLokasi)
 
 	if err != nil {
@@ -72,7 +80,10 @@ func (service *UnitServiceImpl) Delete(ctx context.Context, kodeUnit string) {
 	tx, err := service.Db.Begin()
 	defer helpers.CommitOrRollback(tx, err)
 
-	kodeLokasi := "99"
+	values := ctx.Value("pic")
+	casted := values.(types.M)
+
+	kodeLokasi := casted["kode_lokasi"].(string)
 	unit, err := service.UnitRepository.FindById(ctx, tx, kodeUnit, kodeLokasi)
 
 	if err != nil {
@@ -86,7 +97,10 @@ func (service *UnitServiceImpl) FindById(ctx context.Context, kodeUnit string) w
 	tx, err := service.Db.Begin()
 	defer helpers.CommitOrRollback(tx, err)
 
-	kodeLokasi := "99"
+	values := ctx.Value("pic")
+	casted := values.(types.M)
+
+	kodeLokasi := casted["kode_lokasi"].(string)
 	unit, err := service.UnitRepository.FindById(ctx, tx, kodeUnit, kodeLokasi)
 
 	if err != nil {
@@ -100,7 +114,10 @@ func (service *UnitServiceImpl) FindAll(ctx context.Context) []web.UnitResponse 
 	tx, err := service.Db.Begin()
 	defer helpers.CommitOrRollback(tx, err)
 
-	kodeLokasi := "99"
+	values := ctx.Value("pic")
+	casted := values.(types.M)
+
+	kodeLokasi := casted["kode_lokasi"].(string)
 	units := service.UnitRepository.FindAll(ctx, tx, kodeLokasi)
 
 	return web.ToUnitResponses(units)

@@ -15,21 +15,21 @@ func NewCookieConfigImpl() *CookieConfigImpl {
 	return &CookieConfigImpl{}
 }
 
-func (cookie *CookieConfigImpl) Get(key string) string {
+func (cookieConfig *CookieConfigImpl) Get(key string) string {
 	return os.Getenv(key)
 }
 
-func (cookie *CookieConfigImpl) setSecureCookie() *securecookie.SecureCookie {
-	hash := cookie.Get("COOKIE_HASH_KEY")
-	block := cookie.Get("COOKIE_BLOCK_KEY")
+func (cookieConfig *CookieConfigImpl) setSecureCookie() *securecookie.SecureCookie {
+	hash := cookieConfig.Get("COOKIE_HASH_KEY")
+	block := cookieConfig.Get("COOKIE_BLOCK_KEY")
 
 	secure := securecookie.New([]byte(hash), []byte(block))
 
 	return secure
 }
 
-func (cookie *CookieConfigImpl) SetCookieToken(writer http.ResponseWriter, cookieName string, data types.M, expiration time.Time) {
-	secure := cookie.setSecureCookie()
+func (cookieConfig *CookieConfigImpl) SetCookieToken(writer http.ResponseWriter, cookieName string, data types.M, expiration time.Time) {
+	secure := cookieConfig.setSecureCookie()
 
 	encoded, err := secure.Encode(cookieName, data)
 	PanicIfError(err)
@@ -44,4 +44,19 @@ func (cookie *CookieConfigImpl) SetCookieToken(writer http.ResponseWriter, cooki
 	newCookie.Path = "/"
 
 	http.SetCookie(writer, newCookie)
+}
+
+func (cookieConfig *CookieConfigImpl) GetCookieToken(cookieName string, request *http.Request) (types.M, error) {
+	secure := cookieConfig.setSecureCookie()
+
+	cookie, err := request.Cookie(cookieName)
+	PanicIfError(err)
+
+	data := types.M{}
+
+	if err = secure.Decode(cookieName, cookie.Value, &data); err == nil {
+		return data, nil
+	}
+
+	return nil, err
 }

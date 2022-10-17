@@ -8,6 +8,7 @@ import (
 	"esaku-project/app/settings/repository"
 	"esaku-project/exceptions"
 	"esaku-project/helpers"
+	"esaku-project/types"
 	"fmt"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/feature/s3/manager"
@@ -33,9 +34,14 @@ func (service *KaryawanServiceImpl) Save(ctx context.Context, request web.Karyaw
 	tx, err := service.Db.Begin()
 	defer helpers.CommitOrRollback(tx, err)
 
+	values := ctx.Value("pic")
+	casted := values.(types.M)
+
+	kodeLokasi := casted["kode_lokasi"].(string)
+
 	karyawan := domain.Karyawan{
 		Nik:        request.Nik,
-		KodeLokasi: "99",
+		KodeLokasi: kodeLokasi,
 		Nama:       request.Nama,
 		KodeUnit:   request.KodeUnit,
 		FlagAktif:  request.FlagAktif,
@@ -57,8 +63,12 @@ func (service *KaryawanServiceImpl) Update(ctx context.Context, request web.Kary
 
 	tx, err := service.Db.Begin()
 	defer helpers.CommitOrRollback(tx, err)
+	values := ctx.Value("pic")
+	casted := values.(types.M)
 
-	karyawan, err := service.KaryawanRepository.FindById(ctx, tx, request.Nik, "99")
+	kodeLokasi := casted["kode_lokasi"].(string)
+
+	karyawan, err := service.KaryawanRepository.FindById(ctx, tx, request.Nik, kodeLokasi)
 
 	if err != nil {
 		panic(exceptions.NewErrorNotFound(err.Error()))
@@ -82,7 +92,12 @@ func (service *KaryawanServiceImpl) Delete(ctx context.Context, nik string) {
 	tx, err := service.Db.Begin()
 	defer helpers.CommitOrRollback(tx, err)
 
-	karyawan, err := service.KaryawanRepository.FindById(ctx, tx, nik, "99")
+	values := ctx.Value("pic")
+	casted := values.(types.M)
+
+	kodeLokasi := casted["kode_lokasi"].(string)
+
+	karyawan, err := service.KaryawanRepository.FindById(ctx, tx, nik, kodeLokasi)
 
 	if err != nil {
 		panic(exceptions.NewErrorNotFound(err.Error()))
@@ -102,7 +117,12 @@ func (service *KaryawanServiceImpl) FindById(ctx context.Context, nik string) we
 	tx, err := service.Db.Begin()
 	defer helpers.CommitOrRollback(tx, err)
 
-	karyawan, err := service.KaryawanRepository.FindById(ctx, tx, nik, "99")
+	values := ctx.Value("pic")
+	casted := values.(types.M)
+
+	kodeLokasi := casted["kode_lokasi"].(string)
+
+	karyawan, err := service.KaryawanRepository.FindById(ctx, tx, nik, kodeLokasi)
 
 	if err != nil {
 		panic(exceptions.NewErrorNotFound(err.Error()))
@@ -115,7 +135,12 @@ func (service *KaryawanServiceImpl) FindAll(ctx context.Context) []web.KaryawanL
 	tx, err := service.Db.Begin()
 	defer helpers.CommitOrRollback(tx, err)
 
-	karyawans := service.KaryawanRepository.FindAll(ctx, tx, "99")
+	values := ctx.Value("pic")
+	casted := values.(types.M)
+
+	kodeLokasi := casted["kode_lokasi"].(string)
+
+	karyawans := service.KaryawanRepository.FindAll(ctx, tx, kodeLokasi)
 
 	return web.ToKaryawanListResponses(karyawans)
 }
@@ -127,7 +152,11 @@ func (service *KaryawanServiceImpl) UploadImage(ctx context.Context, request web
 	tx, err := service.Db.Begin()
 	defer helpers.CommitOrRollback(tx, err)
 
-	karyawan, err := service.KaryawanRepository.FindById(ctx, tx, request.Nik, "99")
+	values := ctx.Value("pic")
+	casted := values.(types.M)
+
+	kodeLokasi := casted["kode_lokasi"].(string)
+	karyawan, err := service.KaryawanRepository.FindById(ctx, tx, request.Nik, kodeLokasi)
 
 	if err != nil {
 		panic(exceptions.NewErrorNotFound(err.Error()))
