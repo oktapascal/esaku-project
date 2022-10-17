@@ -14,6 +14,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/feature/s3/manager"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/go-playground/validator/v10"
+	"os"
 )
 
 type KaryawanServiceImpl struct {
@@ -104,7 +105,7 @@ func (service *KaryawanServiceImpl) Delete(ctx context.Context, nik string) {
 	}
 
 	_, err = service.S3.DeleteObject(context.TODO(), &s3.DeleteObjectInput{
-		Bucket: aws.String("devsai-s3"),
+		Bucket: aws.String(os.Getenv("AWS_BUCKET")),
 		Key:    aws.String(fmt.Sprintf("dev/%s", karyawan.Foto)),
 	})
 
@@ -163,7 +164,7 @@ func (service *KaryawanServiceImpl) UploadImage(ctx context.Context, request web
 	}
 
 	_, err = service.S3.DeleteObject(context.TODO(), &s3.DeleteObjectInput{
-		Bucket: aws.String("devsai-s3"),
+		Bucket: aws.String(os.Getenv("AWS_BUCKET")),
 		Key:    aws.String(fmt.Sprintf("dev/%s", karyawan.Foto)),
 	})
 
@@ -177,7 +178,7 @@ func (service *KaryawanServiceImpl) UploadImage(ctx context.Context, request web
 	uploader := manager.NewUploader(service.S3)
 
 	_, err = uploader.Upload(context.TODO(), &s3.PutObjectInput{
-		Bucket:        aws.String("devsai-s3"),
+		Bucket:        aws.String(os.Getenv("AWS_BUCKET")),
 		ACL:           "bucket-owner-full-control",
 		Body:          file,
 		ContentLength: request.Foto.Size,

@@ -5,26 +5,24 @@ import (
 	"database/sql"
 	"esaku-project/app/auths/models/web"
 	"esaku-project/app/auths/repository"
-	"esaku-project/configs"
 	"esaku-project/exceptions"
 	"esaku-project/helpers"
 	"github.com/go-playground/validator/v10"
+	"os"
 )
 
 type LoginServiceImpl struct {
 	LoginRepository repository.LoginRepository
 	Db              *sql.DB
 	Validate        *validator.Validate
-	Config          configs.Config
 	JwtConfig       helpers.ConfigJwt
 }
 
-func NewLoginServiceImpl(loginRepository repository.LoginRepository, db *sql.DB, validate *validator.Validate, config configs.Config, jwt helpers.ConfigJwt) *LoginServiceImpl {
+func NewLoginServiceImpl(loginRepository repository.LoginRepository, db *sql.DB, validate *validator.Validate, jwt helpers.ConfigJwt) *LoginServiceImpl {
 	return &LoginServiceImpl{
 		LoginRepository: loginRepository,
 		Db:              db,
 		Validate:        validate,
-		Config:          config,
 		JwtConfig:       jwt,
 	}
 }
@@ -48,8 +46,8 @@ func (service *LoginServiceImpl) Login(ctx context.Context, request web.LoginReq
 		panic(exceptions.NewErrorBadRequest("password incorrect"))
 	}
 
-	jwtSecret := service.Config.Get("JWT_KEY_TOKEN")
-	jwtRefresh := service.Config.Get("JWT_REFRESH_KEY_TOKEN")
+	jwtSecret := os.Getenv("JWT_KEY_TOKEN")
+	jwtRefresh := os.Getenv("JWT_REFRESH_KEY_TOKEN")
 
 	tokenJwt, timeJwt, err := service.JwtConfig.GenerateJwtToken(ctx, jwtSecret, login)
 	helpers.PanicIfError(err)

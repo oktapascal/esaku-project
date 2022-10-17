@@ -46,7 +46,7 @@ func main() {
 	aksesController := controllers.NewHakAksesControllerImpl(aksesService)
 
 	loginRepository := repository2.NewLoginRepositoryImpl()
-	loginService := services2.NewLoginServiceImpl(loginRepository, sqlServer, validate, appConfig, jwtConfig)
+	loginService := services2.NewLoginServiceImpl(loginRepository, sqlServer, validate, jwtConfig)
 	loginController := controllers2.NewLoginControllerImpl(loginService)
 
 	router := routes.NewRouter(
