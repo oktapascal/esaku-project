@@ -4,7 +4,9 @@ import (
 	"esaku-project/app/auths/models/web"
 	"esaku-project/app/auths/services"
 	"esaku-project/helpers"
+	"esaku-project/types"
 	"net/http"
+	"os"
 	"time"
 )
 
@@ -14,6 +16,10 @@ type LoginControllerImpl struct {
 
 func NewLoginControllerImpl(loginService services.LoginService) *LoginControllerImpl {
 	return &LoginControllerImpl{LoginService: loginService}
+}
+
+func (controller *LoginControllerImpl) Get(key string) string {
+	return os.Getenv(key)
 }
 
 func (controller *LoginControllerImpl) Login(writer http.ResponseWriter, request *http.Request) {
@@ -31,17 +37,31 @@ func (controller *LoginControllerImpl) Login(writer http.ResponseWriter, request
 		},
 	}
 
-	helpers.SetCookieToken(writer, loginResponse.CookieAccess, loginResponse.Token, loginResponse.ExpirationAccess)
-	helpers.SetCookieToken(writer, loginResponse.CookieRefresh, loginResponse.RefreshToken, loginResponse.ExpirationRefresh)
+	cookieAccess := controller.Get("COOKIE_ACCESS_TOKEN")
+	cookieRefresh := controller.Get("COOKIE_ACCESS_REFRESH_TOKEN")
+
+	cookieConfig := helpers.NewCookieConfigImpl()
+
+	dataAccess := types.M{"value": loginResponse.Token}
+	cookieConfig.SetCookieToken(writer, cookieAccess, dataAccess, loginResponse.ExpirationAccess)
+
+	dataRefresh := types.M{"value": loginResponse.RefreshToken}
+	cookieConfig.SetCookieToken(writer, cookieRefresh, dataRefresh, loginResponse.ExpirationRefresh)
 
 	helpers.WriteToResponseBodyJson(writer, webResponse)
 }
 
 func (controller *LoginControllerImpl) Logout(writer http.ResponseWriter, request *http.Request) {
-	cookieAccess, cookieRefresh := controller.LoginService.Logout(request.Context())
+	cookieAccess := controller.Get("COOKIE_ACCESS_TOKEN")
+	cookieRefresh := controller.Get("COOKIE_ACCESS_REFRESH_TOKEN")
 
-	helpers.SetCookieToken(writer, cookieAccess, "", time.Unix(0, 0))
-	helpers.SetCookieToken(writer, cookieRefresh, "", time.Unix(0, 0))
+	cookieConfig := helpers.NewCookieConfigImpl()
+
+	dataAccess := types.M{}
+	cookieConfig.SetCookieToken(writer, cookieAccess, dataAccess, time.Unix(0, 0))
+
+	dataRefresh := types.M{}
+	cookieConfig.SetCookieToken(writer, cookieRefresh, dataRefresh, time.Unix(0, 0))
 
 	webResponse := helpers.JsonResponse{
 		Code:   http.StatusOK,

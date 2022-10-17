@@ -1,7 +1,6 @@
 package configs
 
 import (
-	"esaku-project/helpers"
 	"github.com/joho/godotenv"
 	"os"
 )
@@ -19,7 +18,9 @@ func (config *ConfigImpl) Get(key string) string {
 
 func New(filenames ...string) Config {
 	err := godotenv.Load(filenames...)
-	helpers.PanicIfError(err)
+	if err != nil {
+		panic(err)
+	}
 
 	return &ConfigImpl{}
 }

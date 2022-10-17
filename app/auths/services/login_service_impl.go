@@ -50,8 +50,6 @@ func (service *LoginServiceImpl) Login(ctx context.Context, request web.LoginReq
 
 	jwtSecret := service.Config.Get("JWT_KEY_TOKEN")
 	jwtRefresh := service.Config.Get("JWT_REFRESH_KEY_TOKEN")
-	cookieAccess := service.Config.Get("COOKIE_ACCESS_TOKEN")
-	cookieRefresh := service.Config.Get("COOKIE_ACCESS_REFRESH_TOKEN")
 
 	tokenJwt, timeJwt, err := service.JwtConfig.GenerateJwtToken(ctx, jwtSecret, login)
 	helpers.PanicIfError(err)
@@ -63,8 +61,6 @@ func (service *LoginServiceImpl) Login(ctx context.Context, request web.LoginReq
 	login.RefreshToken = tokenRefresh
 	login.ExpirationAccess = timeJwt
 	login.ExpirationRefresh = timeRefresh
-	login.CookieAccess = cookieAccess
-	login.CookieRefresh = cookieRefresh
 
 	return web.ToLoginResponse(login)
 }
