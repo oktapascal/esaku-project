@@ -54,8 +54,14 @@ func (middleware *MiddlewareAuthImpl) MiddlewareCookie(next http.Handler) http.H
 }
 
 func (middleware *MiddlewareAuthImpl) MiddlewareRefreshToken(next http.Handler) http.Handler {
-	//TODO implement me
-	panic("implement me")
+	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+		if request.Context().Value("pic") == nil {
+			next.ServeHTTP(writer, request)
+		}
+
+		next.ServeHTTP(writer, request)
+
+	})
 }
 
 func (middleware *MiddlewareAuthImpl) MiddlewareBearerToken(next http.Handler) http.Handler {
@@ -88,9 +94,7 @@ func (middleware *MiddlewareAuthImpl) MiddlewareBearerToken(next http.Handler) h
 			panic(exceptions.NewErrorUnauthorized("token is invalid"))
 		}
 
-		data := types.M{"kode_lokasi": claims.KodeLokasi, "nik_input": claims.Nik}
-
-		ctx := context.WithValue(request.Context(), "pic", data)
+		ctx := context.WithValue(request.Context(), "token", tokenAccess)
 
 		next.ServeHTTP(writer, request.WithContext(ctx))
 	})

@@ -10,6 +10,7 @@ import (
 	"esaku-project/helpers"
 	"esaku-project/types"
 	"github.com/go-playground/validator/v10"
+	"github.com/golang-jwt/jwt/v4"
 )
 
 type UnitServiceImpl struct {
@@ -33,10 +34,10 @@ func (service *UnitServiceImpl) Save(ctx context.Context, request web.UnitSaveRe
 	tx, err := service.Db.Begin()
 	defer helpers.CommitOrRollback(tx, err)
 
-	values := ctx.Value("pic")
-	casted := values.(types.M)
+	token := ctx.Value("token").(*jwt.Token)
+	claims := token.Claims.(*types.Claims)
 
-	kodeLokasi := casted["kode_lokasi"].(string)
+	kodeLokasi := claims.KodeLokasi
 
 	unit := domain.Unit{
 		KodeUnit:   request.KodeUnit,
@@ -57,10 +58,10 @@ func (service *UnitServiceImpl) Update(ctx context.Context, request web.UnitUpda
 	tx, err := service.Db.Begin()
 	defer helpers.CommitOrRollback(tx, err)
 
-	values := ctx.Value("pic")
-	casted := values.(types.M)
+	token := ctx.Value("token").(*jwt.Token)
+	claims := token.Claims.(*types.Claims)
 
-	kodeLokasi := casted["kode_lokasi"].(string)
+	kodeLokasi := claims.KodeLokasi
 	unit, err := service.UnitRepository.FindById(ctx, tx, request.KodeUnit, kodeLokasi)
 
 	if err != nil {
@@ -80,10 +81,10 @@ func (service *UnitServiceImpl) Delete(ctx context.Context, kodeUnit string) {
 	tx, err := service.Db.Begin()
 	defer helpers.CommitOrRollback(tx, err)
 
-	values := ctx.Value("pic")
-	casted := values.(types.M)
+	token := ctx.Value("token").(*jwt.Token)
+	claims := token.Claims.(*types.Claims)
 
-	kodeLokasi := casted["kode_lokasi"].(string)
+	kodeLokasi := claims.KodeLokasi
 	unit, err := service.UnitRepository.FindById(ctx, tx, kodeUnit, kodeLokasi)
 
 	if err != nil {
@@ -97,10 +98,10 @@ func (service *UnitServiceImpl) FindById(ctx context.Context, kodeUnit string) w
 	tx, err := service.Db.Begin()
 	defer helpers.CommitOrRollback(tx, err)
 
-	values := ctx.Value("pic")
-	casted := values.(types.M)
+	token := ctx.Value("token").(*jwt.Token)
+	claims := token.Claims.(*types.Claims)
 
-	kodeLokasi := casted["kode_lokasi"].(string)
+	kodeLokasi := claims.KodeLokasi
 	unit, err := service.UnitRepository.FindById(ctx, tx, kodeUnit, kodeLokasi)
 
 	if err != nil {
@@ -114,10 +115,10 @@ func (service *UnitServiceImpl) FindAll(ctx context.Context) []web.UnitResponse 
 	tx, err := service.Db.Begin()
 	defer helpers.CommitOrRollback(tx, err)
 
-	values := ctx.Value("pic")
-	casted := values.(types.M)
+	token := ctx.Value("token").(*jwt.Token)
+	claims := token.Claims.(*types.Claims)
 
-	kodeLokasi := casted["kode_lokasi"].(string)
+	kodeLokasi := claims.KodeLokasi
 	units := service.UnitRepository.FindAll(ctx, tx, kodeLokasi)
 
 	return web.ToUnitResponses(units)

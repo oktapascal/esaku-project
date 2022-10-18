@@ -14,6 +14,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/feature/s3/manager"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/go-playground/validator/v10"
+	"github.com/golang-jwt/jwt/v4"
 	"os"
 )
 
@@ -35,10 +36,10 @@ func (service *KaryawanServiceImpl) Save(ctx context.Context, request web.Karyaw
 	tx, err := service.Db.Begin()
 	defer helpers.CommitOrRollback(tx, err)
 
-	values := ctx.Value("pic")
-	casted := values.(types.M)
+	token := ctx.Value("token").(*jwt.Token)
+	claims := token.Claims.(*types.Claims)
 
-	kodeLokasi := casted["kode_lokasi"].(string)
+	kodeLokasi := claims.KodeLokasi
 
 	karyawan := domain.Karyawan{
 		Nik:        request.Nik,
@@ -64,10 +65,11 @@ func (service *KaryawanServiceImpl) Update(ctx context.Context, request web.Kary
 
 	tx, err := service.Db.Begin()
 	defer helpers.CommitOrRollback(tx, err)
-	values := ctx.Value("pic")
-	casted := values.(types.M)
 
-	kodeLokasi := casted["kode_lokasi"].(string)
+	token := ctx.Value("token").(*jwt.Token)
+	claims := token.Claims.(*types.Claims)
+
+	kodeLokasi := claims.KodeLokasi
 
 	karyawan, err := service.KaryawanRepository.FindById(ctx, tx, request.Nik, kodeLokasi)
 
@@ -93,10 +95,10 @@ func (service *KaryawanServiceImpl) Delete(ctx context.Context, nik string) {
 	tx, err := service.Db.Begin()
 	defer helpers.CommitOrRollback(tx, err)
 
-	values := ctx.Value("pic")
-	casted := values.(types.M)
+	token := ctx.Value("token").(*jwt.Token)
+	claims := token.Claims.(*types.Claims)
 
-	kodeLokasi := casted["kode_lokasi"].(string)
+	kodeLokasi := claims.KodeLokasi
 
 	karyawan, err := service.KaryawanRepository.FindById(ctx, tx, nik, kodeLokasi)
 
@@ -118,10 +120,10 @@ func (service *KaryawanServiceImpl) FindById(ctx context.Context, nik string) we
 	tx, err := service.Db.Begin()
 	defer helpers.CommitOrRollback(tx, err)
 
-	values := ctx.Value("pic")
-	casted := values.(types.M)
+	token := ctx.Value("token").(*jwt.Token)
+	claims := token.Claims.(*types.Claims)
 
-	kodeLokasi := casted["kode_lokasi"].(string)
+	kodeLokasi := claims.KodeLokasi
 
 	karyawan, err := service.KaryawanRepository.FindById(ctx, tx, nik, kodeLokasi)
 
@@ -136,10 +138,10 @@ func (service *KaryawanServiceImpl) FindAll(ctx context.Context) []web.KaryawanL
 	tx, err := service.Db.Begin()
 	defer helpers.CommitOrRollback(tx, err)
 
-	values := ctx.Value("pic")
-	casted := values.(types.M)
+	token := ctx.Value("token").(*jwt.Token)
+	claims := token.Claims.(*types.Claims)
 
-	kodeLokasi := casted["kode_lokasi"].(string)
+	kodeLokasi := claims.KodeLokasi
 
 	karyawans := service.KaryawanRepository.FindAll(ctx, tx, kodeLokasi)
 
@@ -153,10 +155,10 @@ func (service *KaryawanServiceImpl) UploadImage(ctx context.Context, request web
 	tx, err := service.Db.Begin()
 	defer helpers.CommitOrRollback(tx, err)
 
-	values := ctx.Value("pic")
-	casted := values.(types.M)
+	token := ctx.Value("token").(*jwt.Token)
+	claims := token.Claims.(*types.Claims)
 
-	kodeLokasi := casted["kode_lokasi"].(string)
+	kodeLokasi := claims.KodeLokasi
 	karyawan, err := service.KaryawanRepository.FindById(ctx, tx, request.Nik, kodeLokasi)
 
 	if err != nil {
