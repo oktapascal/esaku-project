@@ -13,6 +13,7 @@ import (
 	"esaku-project/configs/routes"
 	"esaku-project/configs/storages"
 	"esaku-project/helpers"
+	"esaku-project/middlewares"
 	_ "github.com/denisenkom/go-mssqldb"
 	"github.com/go-playground/validator/v10"
 	"github.com/gorilla/handlers"
@@ -27,6 +28,8 @@ func main() {
 
 	jwtConfig := bootstraps.NewJWTImpl(appConfig)
 	cookieConfig := bootstraps.NewCookieImpl(appConfig)
+
+	middlewareAuthImpl := middlewares.NewMiddlewareAuthImpl(cookieConfig, jwtConfig)
 
 	kelompokMenuRepository := repository.NewKelompokMenuRepositoryImpl()
 	kelompokMenuService := services.NewKelompokMenuServiceImpl(kelompokMenuRepository, sqlServer, validate)
@@ -59,6 +62,7 @@ func main() {
 		karyawanController,
 		aksesController,
 		loginController,
+		middlewareAuthImpl,
 	)
 
 	// CORS

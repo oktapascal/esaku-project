@@ -3,22 +3,17 @@ package bootstraps
 import (
 	"esaku-project/app/auths/models/web"
 	"esaku-project/configs"
+	"esaku-project/types"
 	"github.com/golang-jwt/jwt/v4"
 	"time"
 )
-
-type Claims struct {
-	KodeLokasi string `json:"kode_lokasi"`
-	Nik        string `json:"nik"`
-	jwt.RegisteredClaims
-}
 
 type JWT interface {
 	GenerateAccessToken(login web.LoginResponse) (string, time.Time, error)
 	GenerateRefreshToken(login web.LoginResponse) (string, time.Time, error)
 	generateToken(login web.LoginResponse, expiration time.Time, secret []byte) (string, time.Time, error)
-	getJWTKey() string
-	getRefreshKey() string
+	GetJWTKey() string
+	GetRefreshKey() string
 }
 
 type JWTImpl struct {
@@ -32,17 +27,17 @@ func NewJWTImpl(config configs.Config) *JWTImpl {
 func (config *JWTImpl) GenerateAccessToken(login web.LoginResponse) (string, time.Time, error) {
 	expiration := time.Now().Add(1 * time.Hour)
 
-	return config.generateToken(login, expiration, []byte(config.getJWTKey()))
+	return config.generateToken(login, expiration, []byte(config.GetJWTKey()))
 }
 
 func (config *JWTImpl) GenerateRefreshToken(login web.LoginResponse) (string, time.Time, error) {
 	expiration := time.Now().Add(24 * time.Hour)
 
-	return config.generateToken(login, expiration, []byte(config.getRefreshKey()))
+	return config.generateToken(login, expiration, []byte(config.GetRefreshKey()))
 }
 
 func (config *JWTImpl) generateToken(login web.LoginResponse, expiration time.Time, secret []byte) (string, time.Time, error) {
-	claims := &Claims{
+	claims := &types.Claims{
 		KodeLokasi: login.KodeLokasi,
 		Nik:        login.Nik,
 		RegisteredClaims: jwt.RegisteredClaims{
@@ -60,10 +55,10 @@ func (config *JWTImpl) generateToken(login web.LoginResponse, expiration time.Ti
 	return tokenStr, expiration, nil
 }
 
-func (config *JWTImpl) getJWTKey() string {
+func (config *JWTImpl) GetJWTKey() string {
 	return config.Config.Get("JWT_KEY_TOKEN")
 }
 
-func (config *JWTImpl) getRefreshKey() string {
+func (config *JWTImpl) GetRefreshKey() string {
 	return config.Config.Get("JWT_REFRESH_KEY_TOKEN")
 }

@@ -11,8 +11,8 @@ import (
 )
 
 type Cookie interface {
-	getCookieToken() string
-	getCookieRefresh() string
+	GetCookieToken() string
+	GetCookieRefresh() string
 	getHashCookie() string
 	getBlockCookie() string
 	setSecureCookie() *securecookie.SecureCookie
@@ -38,11 +38,11 @@ func (config *CookieImpl) getBlockCookie() string {
 	return config.Config.Get("COOKIE_BLOCK_KEY")
 }
 
-func (config *CookieImpl) getCookieToken() string {
+func (config *CookieImpl) GetCookieToken() string {
 	return config.Config.Get("COOKIE_ACCESS_TOKEN")
 }
 
-func (config *CookieImpl) getCookieRefresh() string {
+func (config *CookieImpl) GetCookieRefresh() string {
 	return config.Config.Get("COOKIE_ACCESS_REFRESH_TOKEN")
 }
 
@@ -85,15 +85,15 @@ func (config *CookieImpl) GetSecureCookie(name string, request *http.Request) (t
 }
 
 func (config *CookieImpl) CreateTokenAndCookie(login web.LoginResponse, dataAccess, dataRefresh types.M, expirationAccess, expirationRefresh time.Time, writer http.ResponseWriter) error {
-	config.setTokenCookie(config.getCookieToken(), dataAccess, expirationAccess, writer)
-	config.setTokenCookie(config.getCookieRefresh(), dataRefresh, expirationRefresh, writer)
+	config.setTokenCookie(config.GetCookieToken(), dataAccess, expirationAccess, writer)
+	config.setTokenCookie(config.GetCookieRefresh(), dataRefresh, expirationRefresh, writer)
 
 	return nil
 }
 
 func (config *CookieImpl) DeleteCookie(writer http.ResponseWriter) error {
-	config.setTokenCookie(config.getCookieToken(), types.M{}, time.Unix(0, 0), writer)
-	config.setTokenCookie(config.getCookieRefresh(), types.M{}, time.Unix(0, 0), writer)
+	config.setTokenCookie(config.GetCookieToken(), types.M{}, time.Unix(0, 0), writer)
+	config.setTokenCookie(config.GetCookieRefresh(), types.M{}, time.Unix(0, 0), writer)
 
 	return nil
 }

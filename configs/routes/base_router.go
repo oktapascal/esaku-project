@@ -14,6 +14,7 @@ func NewRouter(
 	karyawanController controllers.KaryawanController,
 	aksesController controllers.HakAksesController,
 	loginController controllers2.LoginController,
+	middlewareAuth *middlewares.MiddlewareAuthImpl,
 ) *mux.Router {
 	router := mux.NewRouter()
 	router.StrictSlash(true)
@@ -27,8 +28,8 @@ func NewRouter(
 
 	setting := router.PathPrefix("/api/esaku-setting").Subrouter()
 	//setting.Use(middlewares.MiddlewareRefreshToken)
-	//setting.Use(middlewares.MiddlewareCookie)
-	//setting.Use(middlewares.MiddlewareAuthorization)
+	setting.Use(middlewareAuth.MiddlewareCookie)
+	setting.Use(middlewareAuth.MiddlewareBearerToken)
 	InitializeSettingsRoutes(
 		setting,
 		kelompokMenuController,
