@@ -3,11 +3,11 @@ package controllers
 import (
 	"esaku-project/app/auths/models/web"
 	"esaku-project/app/auths/services"
+	"esaku-project/exceptions"
 	"esaku-project/helpers"
-	"esaku-project/types"
+	"esaku-project/middlewares"
 	"net/http"
 	"os"
-	"time"
 )
 
 type LoginControllerImpl struct {
@@ -37,31 +37,21 @@ func (controller *LoginControllerImpl) Login(writer http.ResponseWriter, request
 		},
 	}
 
-	cookieAccess := controller.Get("COOKIE_ACCESS_TOKEN")
-	cookieRefresh := controller.Get("COOKIE_ACCESS_REFRESH_TOKEN")
+	err := middlewares.GenerateTokenAndCookie(loginResponse, writer)
 
-	cookieConfig := helpers.NewCookieConfigImpl()
-
-	dataAccess := types.M{"value": loginResponse.Token}
-	cookieConfig.SetCookieToken(writer, cookieAccess, dataAccess, loginResponse.ExpirationAccess)
-
-	dataRefresh := types.M{"value": loginResponse.RefreshToken}
-	cookieConfig.SetCookieToken(writer, cookieRefresh, dataRefresh, loginResponse.ExpirationRefresh)
+	if err != nil {
+		panic(exceptions.NewErrorUnauthorized("token is incorrect"))
+	}
 
 	helpers.WriteToResponseBodyJson(writer, webResponse)
 }
 
 func (controller *LoginControllerImpl) Logout(writer http.ResponseWriter, request *http.Request) {
-	cookieAccess := controller.Get("COOKIE_ACCESS_TOKEN")
-	cookieRefresh := controller.Get("COOKIE_ACCESS_REFRESH_TOKEN")
+	err := middlewares.DeleteCookie(writer)
 
-	cookieConfig := helpers.NewCookieConfigImpl()
-
-	dataAccess := types.M{}
-	cookieConfig.SetCookieToken(writer, cookieAccess, dataAccess, time.Unix(0, 0))
-
-	dataRefresh := types.M{}
-	cookieConfig.SetCookieToken(writer, cookieRefresh, dataRefresh, time.Unix(0, 0))
+	if err != nil {
+		panic(err.Error())
+	}
 
 	webResponse := helpers.JsonResponse{
 		Code:   http.StatusOK,
