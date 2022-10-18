@@ -24,6 +24,7 @@ func main() {
 	appConfig := configs.New(".env.dev")
 	validate := validator.New()
 	sqlServer := databases.NewSqlServer(appConfig)
+	_ = databases.NewMongoDatabase(appConfig)
 	awsS3 := storages.NewSessionAws(appConfig)
 
 	jwtConfig := bootstraps.NewJWTImpl(appConfig)
