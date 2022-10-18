@@ -3,6 +3,7 @@ package middlewares
 import (
 	"context"
 	"errors"
+	"esaku-project/app/auths/models/web"
 	"esaku-project/bootstraps"
 	"esaku-project/exceptions"
 	"esaku-project/types"
@@ -11,6 +12,7 @@ import (
 	"github.com/gorilla/securecookie"
 	"net/http"
 	"strings"
+	"time"
 )
 
 type MiddlewareAuth interface {
@@ -34,7 +36,6 @@ func NewMiddlewareAuthImpl(cookieConfig bootstraps.Cookie, jwtConfig bootstraps.
 func (middleware *MiddlewareAuthImpl) MiddlewareCookie(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		cookieAccess := middleware.CookieConfig.GetCookieToken()
-
 		accessCookie, _ := request.Cookie(cookieAccess)
 
 		if accessCookie == nil {
@@ -42,7 +43,6 @@ func (middleware *MiddlewareAuthImpl) MiddlewareCookie(next http.Handler) http.H
 		}
 
 		dataAccess, err := middleware.CookieConfig.GetSecureCookie(cookieAccess, request)
-
 		if err != nil && err != http.ErrNoCookie && err != securecookie.ErrMacInvalid {
 			panic(errors.New(err.Error()))
 		}
@@ -57,6 +57,60 @@ func (middleware *MiddlewareAuthImpl) MiddlewareRefreshToken(next http.Handler) 
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		if request.Context().Value("pic") == nil {
 			next.ServeHTTP(writer, request)
+		}
+
+		values := request.Context().Value("token").(*jwt.Token)
+		claims := values.Claims.(*types.Claims)
+
+		if time.Unix(claims.ExpiresAt.Unix(), 0).Sub(time.Now()) < 15*time.Minute {
+			cookieRefresh := middleware.CookieConfig.GetCookieRefresh()
+			refreshCookie, err := request.Cookie(cookieRefresh)
+
+			if err == nil && refreshCookie != nil {
+				dataRefresh, err := middleware.CookieConfig.GetSecureCookie(cookieRefresh, request)
+				if err != nil && err != http.ErrNoCookie && err != securecookie.ErrMacInvalid {
+					panic(errors.New(err.Error()))
+				}
+
+				refreshToken := dataRefresh["value"].(string)
+				verifyRefresh := middleware.JwtConfig.GetRefreshKey()
+
+				tokenRefresh, err := jwt.ParseWithClaims(refreshToken, claims, func(token *jwt.Token) (interface{}, error) {
+					return []byte(verifyRefresh), nil
+				})
+
+				if err != nil {
+					if err == jwt.ErrSignatureInvalid {
+						panic(exceptions.NewErrorUnauthorized("signature token is invalid"))
+						return
+					}
+
+					panic(exceptions.NewErrorUnauthorized(err.Error()))
+					return
+				}
+
+				if tokenRefresh != nil && tokenRefresh.Valid {
+					loginResponse := web.LoginResponse{
+						Nik:        claims.Nik,
+						KodeLokasi: claims.KodeLokasi,
+					}
+					accessToken, expirationAccess, err := middleware.JwtConfig.GenerateAccessToken(loginResponse)
+					if err != nil {
+						panic(exceptions.NewErrorUnauthorized("token is incorrect"))
+					}
+
+					refreshToken, expirationRefresh, err := middleware.JwtConfig.GenerateRefreshToken(loginResponse)
+					if err != nil {
+						panic(exceptions.NewErrorUnauthorized("token is incorrect"))
+					}
+
+					dataAccess := types.M{"value": accessToken}
+					dataRefresh := types.M{"value": refreshToken}
+
+					_ = middleware.CookieConfig.CreateTokenAndCookie(loginResponse, dataAccess, dataRefresh, expirationAccess, expirationRefresh, writer)
+				}
+			}
+
 		}
 
 		next.ServeHTTP(writer, request)
