@@ -7,6 +7,7 @@ import (
 	"esaku-project/app/settings/controllers"
 	"esaku-project/app/settings/repository"
 	"esaku-project/app/settings/services"
+	"esaku-project/bootstraps"
 	"esaku-project/configs"
 	"esaku-project/configs/databases"
 	"esaku-project/configs/routes"
@@ -23,6 +24,9 @@ func main() {
 	validate := validator.New()
 	sqlServer := databases.NewSqlServer(appConfig)
 	awsS3 := storages.NewSessionAws(appConfig)
+
+	jwtConfig := bootstraps.NewJWTImpl(appConfig)
+	cookieConfig := bootstraps.NewCookieImpl(appConfig)
 
 	kelompokMenuRepository := repository.NewKelompokMenuRepositoryImpl()
 	kelompokMenuService := services.NewKelompokMenuServiceImpl(kelompokMenuRepository, sqlServer, validate)
@@ -46,7 +50,7 @@ func main() {
 
 	loginRepository := repository2.NewLoginRepositoryImpl()
 	loginService := services2.NewLoginServiceImpl(loginRepository, sqlServer, validate)
-	loginController := controllers2.NewLoginControllerImpl(loginService)
+	loginController := controllers2.NewLoginControllerImpl(loginService, cookieConfig, jwtConfig)
 
 	router := routes.NewRouter(
 		kelompokMenuController,
