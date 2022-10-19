@@ -1,23 +1,11 @@
 package domain
 
-type SubMenu3 struct {
-	Nama    string
-	Program string
-	SubMenu []SubMenu2
-}
-
-type SubMenu2 struct {
-	Nama    string
-	Program string
-}
-
-type SubMenu1 struct {
-	Nama    string
-	Program string
-	SubMenu []SubMenu2
-}
-
 type Menu struct {
-	KodeKlpMenu string
-	SubMenu     []SubMenu1
+	KodeMenu   string
+	NamaMenu   string
+	Level      string
+	Index      string
+	StatusMenu uint8
+	KelompokMenu
+	Form
 }
