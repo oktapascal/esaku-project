@@ -31,6 +31,10 @@ func main() {
 
 	middlewareAuthImpl := middlewares.NewMiddlewareAuthImpl(cookieConfig, jwtConfig)
 
+	loginRepository := repository2.NewLoginRepositoryImpl()
+	loginService := services2.NewLoginServiceImpl(loginRepository, sqlServer, validate)
+	loginController := controllers2.NewLoginControllerImpl(loginService, cookieConfig, jwtConfig)
+
 	kelompokMenuRepository := repository.NewKelompokMenuRepositoryImpl()
 	kelompokMenuService := services.NewKelompokMenuServiceImpl(kelompokMenuRepository, sqlServer, validate)
 	kelompokMenuController := controllers.NewKelompokMenuControllerImpl(kelompokMenuService)
@@ -51,18 +55,19 @@ func main() {
 	aksesService := services.NewHakAksesServiceImpl(aksesRepository, sqlServer, validate)
 	aksesController := controllers.NewHakAksesControllerImpl(aksesService)
 
-	loginRepository := repository2.NewLoginRepositoryImpl()
-	loginService := services2.NewLoginServiceImpl(loginRepository, sqlServer, validate)
-	loginController := controllers2.NewLoginControllerImpl(loginService, cookieConfig, jwtConfig)
+	menuRepository := repository.NewMenuRepositoryImpl()
+	menuService := services.NewMenuServiceImpl(menuRepository, sqlServer, validate)
+	menuController := controllers.NewMenuControllerImpl(menuService)
 
 	router := routes.NewRouter(
+		middlewareAuthImpl,
 		kelompokMenuController,
 		formController,
 		unitController,
 		karyawanController,
 		aksesController,
 		loginController,
-		middlewareAuthImpl,
+		menuController,
 	)
 
 	// CORS

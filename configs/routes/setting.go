@@ -12,6 +12,7 @@ func InitializeSettingsRoutes(
 	unitController controllers.UnitController,
 	karyawanController controllers.KaryawanController,
 	aksesController controllers.HakAksesController,
+	menuController controllers.MenuController,
 ) {
 	// Kelompok Menu
 	router.HandleFunc("/kelompok-menu", kelompokMenuController.FindAll).Methods("GET")
@@ -48,4 +49,8 @@ func InitializeSettingsRoutes(
 	router.HandleFunc("/hak-akses", aksesController.Save).Methods("POST")
 	router.HandleFunc("/hak-akses/{nik}", aksesController.FindById).Methods("PUT")
 	router.HandleFunc("/hak-akses/{nik}", aksesController.Delete).Methods("DELETE")
+
+	//	MENU
+	router.HandleFunc("/menu/{kodeKlp}", menuController.FindById).Methods("GET")
+	router.HandleFunc("/menu", menuController.Save).Methods("POST")
 }

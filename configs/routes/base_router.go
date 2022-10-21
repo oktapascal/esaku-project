@@ -8,13 +8,14 @@ import (
 )
 
 func NewRouter(
+	middlewareAuth *middlewares.MiddlewareAuthImpl,
 	kelompokMenuController controllers.KelompokMenuController,
 	formController controllers.FormController,
 	unitController controllers.UnitController,
 	karyawanController controllers.KaryawanController,
 	aksesController controllers.HakAksesController,
 	loginController controllers2.LoginController,
-	middlewareAuth *middlewares.MiddlewareAuthImpl,
+	menuController controllers.MenuController,
 ) *mux.Router {
 	router := mux.NewRouter()
 	router.StrictSlash(true)
@@ -38,6 +39,7 @@ func NewRouter(
 		unitController,
 		karyawanController,
 		aksesController,
+		menuController,
 	)
 
 	master := router.PathPrefix("/api/esaku-master").Subrouter()
