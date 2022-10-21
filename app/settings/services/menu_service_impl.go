@@ -5,20 +5,24 @@ import (
 	"database/sql"
 	"esaku-project/app/settings/models/web"
 	"esaku-project/app/settings/repository"
+	"esaku-project/exceptions"
+	"esaku-project/helpers"
 	"github.com/go-playground/validator/v10"
 )
 
 type MenuServiceImpl struct {
-	MenuRepository repository.MenuRepository
-	Db             *sql.DB
-	Validate       *validator.Validate
+	KelompokMenuRepository repository.KelompokMenuRepository
+	MenuRepository         repository.MenuRepository
+	Db                     *sql.DB
+	Validate               *validator.Validate
 }
 
-func NewMenuServiceImpl(menuRepository repository.MenuRepository, db *sql.DB, validate *validator.Validate) *MenuServiceImpl {
+func NewMenuServiceImpl(kelompokMenuRepository repository.KelompokMenuRepository, menuRepository repository.MenuRepository, db *sql.DB, validate *validator.Validate) *MenuServiceImpl {
 	return &MenuServiceImpl{
-		MenuRepository: menuRepository,
-		Db:             db,
-		Validate:       validate,
+		KelompokMenuRepository: kelompokMenuRepository,
+		MenuRepository:         menuRepository,
+		Db:                     db,
+		Validate:               validate,
 	}
 }
 
@@ -32,7 +36,16 @@ func (service *MenuServiceImpl) Delete(ctx context.Context, klpMenu string) {
 	panic("implement me")
 }
 
-func (service *MenuServiceImpl) FindById(ctx context.Context, klpMenu string) {
-	//TODO implement me
-	panic("implement me")
+func (service *MenuServiceImpl) FindById(ctx context.Context, kodeKlp string) web.MenuResponse {
+	tx, err := service.Db.Begin()
+	defer helpers.CommitOrRollback(tx, err)
+
+	klpMenu, err := service.KelompokMenuRepository.FindById(ctx, tx, kodeKlp)
+	if err != nil {
+		panic(exceptions.NewErrorNotFound(err.Error()))
+	}
+
+	menus := service.MenuRepository.FindById(ctx, tx, kodeKlp)
+
+	return web.ToMenuResponse(klpMenu, menus)
 }

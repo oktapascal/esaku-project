@@ -29,8 +29,8 @@ func NewRouter(
 
 	setting := router.PathPrefix("/api/esaku-setting").Subrouter()
 	setting.Use(middlewareAuth.MiddlewareCookie)
-	setting.Use(middlewareAuth.MiddlewareBearerToken)
 	setting.Use(middlewareAuth.MiddlewareRefreshToken)
+	setting.Use(middlewareAuth.MiddlewareBearerToken)
 
 	InitializeSettingsRoutes(
 		setting,

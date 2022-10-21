@@ -56,7 +56,7 @@ func main() {
 	aksesController := controllers.NewHakAksesControllerImpl(aksesService)
 
 	menuRepository := repository.NewMenuRepositoryImpl()
-	menuService := services.NewMenuServiceImpl(menuRepository, sqlServer, validate)
+	menuService := services.NewMenuServiceImpl(kelompokMenuRepository, menuRepository, sqlServer, validate)
 	menuController := controllers.NewMenuControllerImpl(menuService)
 
 	router := routes.NewRouter(

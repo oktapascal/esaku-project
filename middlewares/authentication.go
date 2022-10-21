@@ -55,8 +55,9 @@ func (middleware *MiddlewareAuthImpl) MiddlewareCookie(next http.Handler) http.H
 
 func (middleware *MiddlewareAuthImpl) MiddlewareRefreshToken(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
-		if request.Context().Value("pic") == nil {
+		if request.Context().Value("token") == nil {
 			next.ServeHTTP(writer, request)
+			return
 		}
 
 		values := request.Context().Value("token").(*jwt.Token)
@@ -114,7 +115,6 @@ func (middleware *MiddlewareAuthImpl) MiddlewareRefreshToken(next http.Handler) 
 		}
 
 		next.ServeHTTP(writer, request)
-
 	})
 }
 

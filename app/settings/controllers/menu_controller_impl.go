@@ -2,6 +2,8 @@ package controllers
 
 import (
 	"esaku-project/app/settings/services"
+	"esaku-project/helpers"
+	"github.com/gorilla/mux"
 	"net/http"
 )
 
@@ -24,6 +26,16 @@ func (controller *MenuControllerImpl) Delete(writer http.ResponseWriter, request
 }
 
 func (controller *MenuControllerImpl) FindById(writer http.ResponseWriter, request *http.Request) {
-	//TODO implement me
-	panic("implement me")
+	vars := mux.Vars(request)
+	kodeKlp := vars["kodeKlp"]
+
+	menuResponse := controller.MenuService.FindById(request.Context(), kodeKlp)
+
+	webResponse := helpers.JsonResponse{
+		Code:   http.StatusOK,
+		Status: "OK",
+		Data:   menuResponse,
+	}
+
+	helpers.WriteToResponseBodyJson(writer, webResponse)
 }
