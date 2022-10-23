@@ -27,13 +27,23 @@ func NewMenuServiceImpl(kelompokMenuRepository repository.KelompokMenuRepository
 }
 
 func (service *MenuServiceImpl) Save(ctx context.Context, request web.MenuSaveRequest) {
-	//TODO implement me
-	panic("implement me")
-}
+	err := service.Validate.Struct(request)
+	helpers.PanicIfError(err)
 
-func (service *MenuServiceImpl) Delete(ctx context.Context, klpMenu string) {
-	//TODO implement me
-	panic("implement me")
+	tx, err := service.Db.Begin()
+	defer helpers.CommitOrRollback(tx, err)
+
+	klpMenu, err := service.KelompokMenuRepository.FindById(ctx, tx, request.KodeKlpMenu)
+
+	if err != nil {
+		panic(exceptions.NewErrorNotFound(err.Error()))
+	}
+
+	menus := web.ToDomainMenuRequests(request)
+
+	service.MenuRepository.Delete(ctx, tx, klpMenu.KodeKlp)
+
+	service.MenuRepository.Save(ctx, tx, menus)
 }
 
 func (service *MenuServiceImpl) FindById(ctx context.Context, kodeKlp string) web.MenuResponse {

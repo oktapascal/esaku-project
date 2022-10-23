@@ -6,6 +6,7 @@ import (
 	"esaku-project/app/settings/models/domain"
 	"esaku-project/helpers"
 	"fmt"
+	"strconv"
 	"strings"
 )
 
@@ -18,22 +19,24 @@ func NewMenuRepositoryImpl() *MenuRepositoryImpl {
 
 func (repository *MenuRepositoryImpl) Save(ctx context.Context, tx *sql.Tx, menu []domain.Menu) {
 	valueStrings := make([]string, 0, len(menu))
-	valueArgs := make([]string, 0, len(menu)*6)
+	valueArgs := make([]interface{}, 0, len(menu)*6)
 
 	i := 0
 	for _, menu := range menu {
 		valueStrings = append(valueStrings, fmt.Sprintf("(@p%d, @p%d, @p%d, @p%d, @p%d, @p%d)", i*6+1, i*6+2, i*6+3, i*6+4, i*6+5, i*6+6))
-		valueArgs = append(valueArgs, menu.KodeKlp)
+		valueArgs = append(valueArgs, menu.KelompokMenu.KodeKlp)
 		valueArgs = append(valueArgs, menu.KodeMenu)
 		valueArgs = append(valueArgs, menu.NamaMenu)
-		valueArgs = append(valueArgs, menu.Level)
-		valueArgs = append(valueArgs, menu.Index)
-		valueArgs = append(valueArgs, menu.KodeForm)
+		valueArgs = append(valueArgs, strconv.Itoa(menu.Level))
+		valueArgs = append(valueArgs, strconv.Itoa(menu.Index))
+		valueArgs = append(valueArgs, menu.Form.KodeForm)
 		i++
 	}
 
-	SQL := fmt.Sprintf(`insert into menu (kode_klp, kode_menu, nama_menu, level_menu, rowindex, kode_form values %s)`, strings.Join(valueStrings, ","))
-	fmt.Println(SQL)
+	SQL := fmt.Sprintf(`insert into menu (kode_klp, kode_menu, nama, level_menu, rowindex, kode_form) values %s`, strings.Join(valueStrings, ","))
+
+	_, err := tx.ExecContext(ctx, SQL, valueArgs...)
+	helpers.PanicIfError(err)
 }
 
 func (repository *MenuRepositoryImpl) Delete(ctx context.Context, tx *sql.Tx, kodeKlp string) {

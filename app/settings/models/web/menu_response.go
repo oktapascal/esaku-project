@@ -2,14 +2,13 @@ package web
 
 import (
 	"esaku-project/app/settings/models/domain"
-	"strconv"
 )
 
 type listMenuSub struct {
 	KodeMenu string        `json:"kode_menu"`
 	NamaMenu string        `json:"nama_menu"`
 	Program  string        `json:"program"`
-	Index    uint64        `json:"row_index"`
+	Index    int           `json:"row_index"`
 	SubMenu  []listMenuSub `json:"sub_menu"`
 }
 
@@ -17,7 +16,7 @@ type listMenuMain struct {
 	KodeMenu string        `json:"kode_menu"`
 	NamaMenu string        `json:"nama_menu"`
 	Program  string        `json:"program"`
-	Index    uint64        `json:"row_index"`
+	Index    int           `json:"row_index"`
 	SubMenu  []listMenuSub `json:"sub_menu"`
 }
 
@@ -28,23 +27,21 @@ type MenuResponse struct {
 }
 
 func toListMenuSub(menu domain.Menu) listMenuSub {
-	idx, _ := strconv.ParseUint(menu.Index, 10, 64)
 	return listMenuSub{
 		KodeMenu: menu.KodeMenu,
 		NamaMenu: menu.NamaMenu,
 		Program:  menu.Program,
-		Index:    idx,
+		Index:    menu.Index,
 		SubMenu:  nil,
 	}
 }
 
 func toListMenuMain(menu domain.Menu) listMenuMain {
-	idx, _ := strconv.ParseUint(menu.Index, 10, 64)
 	return listMenuMain{
 		KodeMenu: menu.KodeMenu,
 		NamaMenu: menu.NamaMenu,
 		Program:  menu.Program,
-		Index:    idx,
+		Index:    menu.Index,
 		SubMenu:  nil,
 	}
 }
@@ -52,23 +49,21 @@ func toListMenuMain(menu domain.Menu) listMenuMain {
 func toListMenuResponse(menu []domain.Menu) []listMenuMain {
 	var listMenuResponses []listMenuMain
 
-	var level uint64
 	i := -1
 	j := -1
 	for _, menu := range menu {
-		level, _ = strconv.ParseUint(menu.Level, 10, 64)
-		if level == 0 {
+		if menu.Level == 0 {
 			listMenuResponses = append(listMenuResponses, toListMenuMain(menu))
 
 			i++
 		}
 
-		if level == 1 {
+		if menu.Level == 1 {
 			listMenuResponses[i].SubMenu = append(listMenuResponses[i].SubMenu, toListMenuSub(menu))
 			j++
 		}
 
-		if level == 2 {
+		if menu.Level == 2 {
 			listMenuResponses[i].SubMenu[j].SubMenu = append(listMenuResponses[i].SubMenu[j].SubMenu, toListMenuSub(menu))
 		}
 	}

@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"esaku-project/app/settings/models/web"
 	"esaku-project/app/settings/services"
 	"esaku-project/helpers"
 	"github.com/gorilla/mux"
@@ -16,13 +17,17 @@ func NewMenuControllerImpl(menuService services.MenuService) *MenuControllerImpl
 }
 
 func (controller *MenuControllerImpl) Save(writer http.ResponseWriter, request *http.Request) {
-	//TODO implement me
-	panic("implement me")
-}
+	menuRequest := web.MenuSaveRequest{}
+	helpers.ReadFromRequestBodyJson(request, &menuRequest)
 
-func (controller *MenuControllerImpl) Delete(writer http.ResponseWriter, request *http.Request) {
-	//TODO implement me
-	panic("implement me")
+	controller.MenuService.Save(request.Context(), menuRequest)
+
+	webResponse := helpers.JsonResponse{
+		Code:   http.StatusOK,
+		Status: "OK",
+	}
+
+	helpers.WriteToResponseBodyJson(writer, webResponse)
 }
 
 func (controller *MenuControllerImpl) FindById(writer http.ResponseWriter, request *http.Request) {
