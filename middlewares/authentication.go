@@ -36,10 +36,11 @@ func NewMiddlewareAuthImpl(cookieConfig bootstraps.Cookie, jwtConfig bootstraps.
 func (middleware *MiddlewareAuthImpl) MiddlewareCookie(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		cookieAccess := middleware.CookieConfig.GetCookieToken()
-		accessCookie, _ := request.Cookie(cookieAccess)
+		accessCookie, err := request.Cookie(cookieAccess)
 
-		if accessCookie == nil {
+		if accessCookie == nil && err != nil {
 			next.ServeHTTP(writer, request)
+			return
 		}
 
 		dataAccess, err := middleware.CookieConfig.GetSecureCookie(cookieAccess, request)
