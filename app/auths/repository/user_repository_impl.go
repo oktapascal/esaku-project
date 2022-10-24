@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"esaku-project/app/settings/models/domain"
 	"esaku-project/helpers"
+	"github.com/pkg/errors"
 )
 
 type UserRepositoryImpl struct {
@@ -15,11 +16,10 @@ func NewUserRepositoryImpl() *UserRepositoryImpl {
 }
 
 func (repository *UserRepositoryImpl) Update(ctx context.Context, tx *sql.Tx, karyawan domain.Karyawan) {
-	SQL := `update karyawan set jabatan = @p1, nama = @p2, kode_pp = @p3, email = @p4, no_telp = @p5 
-    where nik = @p6`
+	SQL := `update karyawan set jabatan = @p1, nama = @p2, email = @p3, no_telp = @p4 
+    where nik = @p5`
 
-	_, err := tx.ExecContext(ctx, SQL, karyawan.Jabatan, karyawan.Nama, karyawan.KodeUnit,
-		karyawan.Email, karyawan.NoTelp, karyawan.Nik)
+	_, err := tx.ExecContext(ctx, SQL, karyawan.Jabatan, karyawan.Nama, karyawan.Email, karyawan.NoTelp, karyawan.Nik)
 	helpers.PanicIfError(err)
 }
 
@@ -35,4 +35,28 @@ func (repository *UserRepositoryImpl) UploadImage(ctx context.Context, tx *sql.T
 
 	_, err := tx.ExecContext(ctx, SQL, karyawan.Foto, karyawan.Nik)
 	helpers.PanicIfError(err)
+}
+
+func (repository *UserRepositoryImpl) FindById(ctx context.Context, tx *sql.Tx, nik string) (domain.Karyawan, error) {
+	SQL := `select a.nik, a.nama nama_karyawan, a.jabatan, a.email, a.no_telp
+	from karyawan a
+	inner join hakakses b on a.nik=b.nik
+	where a.nik = @p1`
+
+	rows, err := tx.QueryContext(ctx, SQL, nik)
+	helpers.PanicIfError(err)
+
+	//noinspection GoUnhandledErrorResult
+	defer rows.Close()
+
+	user := domain.Karyawan{}
+
+	if rows.Next() {
+		err := rows.Scan(&user.Nik, &user.Nama, &user.Jabatan, &user.Email, &user.NoTelp)
+		helpers.PanicIfError(err)
+
+		return user, nil
+	} else {
+		return user, errors.New("user is not found")
+	}
 }

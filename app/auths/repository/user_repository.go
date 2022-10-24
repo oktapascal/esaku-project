@@ -9,5 +9,6 @@ import (
 type UserRepository interface {
 	Update(ctx context.Context, tx *sql.Tx, karyawan domain.Karyawan)
 	UpdatePassword(ctx context.Context, tx *sql.Tx, hakakses domain.HakAkses)
-	UploadImage(ctx context.Context, tx *sql.Tx, karyawan domain.Karyawan)
+	FindById(ctx context.Context, tx *sql.Tx, hakakses domain.HakAkses)
+	UploadImage(ctx context.Context, tx *sql.Tx, nik string) (domain.Karyawan, error)
 }
