@@ -51,5 +51,8 @@ func NewRouter(
 	report := router.PathPrefix("/api/esaku-report").Subrouter()
 	InitializeReportRoutes(report)
 
+	filter := router.PathPrefix("/api/esaku-filter").Subrouter()
+	InitializeFilterRoutes(filter)
+
 	return router
 }
