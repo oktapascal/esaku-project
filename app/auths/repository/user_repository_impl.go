@@ -17,33 +17,34 @@ func NewUserRepositoryImpl() *UserRepositoryImpl {
 
 func (repository *UserRepositoryImpl) Update(ctx context.Context, tx *sql.Tx, karyawan domain.Karyawan) {
 	SQL := `update karyawan set jabatan = @p1, nama = @p2, email = @p3, no_telp = @p4 
-    where nik = @p5`
+    where nik = @p5 and kode_lokasi = @p6`
 
-	_, err := tx.ExecContext(ctx, SQL, karyawan.Jabatan, karyawan.Nama, karyawan.Email, karyawan.NoTelp, karyawan.Nik)
+	_, err := tx.ExecContext(ctx, SQL, karyawan.Jabatan, karyawan.Nama, karyawan.Email, karyawan.NoTelp, karyawan.Nik,
+		karyawan.KodeLokasi)
 	helpers.PanicIfError(err)
 }
 
 func (repository *UserRepositoryImpl) UpdatePassword(ctx context.Context, tx *sql.Tx, hakakses domain.HakAkses) {
-	SQL := "update hakakses set password = @p1 where nik = @p2"
+	SQL := "update hakakses set password = @p1 where nik = @p2 and kode_lokasi = @p3"
 
-	_, err := tx.ExecContext(ctx, SQL, hakakses.Password, hakakses.Karyawan.Nik)
+	_, err := tx.ExecContext(ctx, SQL, hakakses.Password, hakakses.Karyawan.Nik, hakakses.Karyawan.KodeLokasi)
 	helpers.PanicIfError(err)
 }
 
 func (repository *UserRepositoryImpl) UploadImage(ctx context.Context, tx *sql.Tx, karyawan domain.Karyawan) {
-	SQL := "update karyawan set foto = @p1 where nik = @p2"
+	SQL := "update karyawan set foto = @p1 where nik = @p2 and kode_lokasi = @p3"
 
-	_, err := tx.ExecContext(ctx, SQL, karyawan.Foto, karyawan.Nik)
+	_, err := tx.ExecContext(ctx, SQL, karyawan.Foto, karyawan.Nik, karyawan.KodeLokasi)
 	helpers.PanicIfError(err)
 }
 
-func (repository *UserRepositoryImpl) FindById(ctx context.Context, tx *sql.Tx, nik string) (domain.Karyawan, error) {
+func (repository *UserRepositoryImpl) FindById(ctx context.Context, tx *sql.Tx, nik string, kodeLokasi string) (domain.Karyawan, error) {
 	SQL := `select a.nik, a.nama nama_karyawan, a.jabatan, a.email, a.no_telp
 	from karyawan a
 	inner join hakakses b on a.nik=b.nik
-	where a.nik = @p1`
+	where a.nik = @p1 and a.kode_lokasi = @p2`
 
-	rows, err := tx.QueryContext(ctx, SQL, nik)
+	rows, err := tx.QueryContext(ctx, SQL, nik, kodeLokasi)
 	helpers.PanicIfError(err)
 
 	//noinspection GoUnhandledErrorResult

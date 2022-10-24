@@ -131,6 +131,13 @@ func (service *KaryawanServiceImpl) FindById(ctx context.Context, nik string) we
 		panic(exceptions.NewErrorNotFound(err.Error()))
 	}
 
+	if karyawan.Foto != "" {
+		AwsBucket := os.Getenv("AWS_BUCKET")
+		AwsRegion := os.Getenv("AWS_REGION")
+
+		karyawan.Foto = "https://" + AwsBucket + "." + "s3-" + AwsRegion + ".amazonaws.com/" + karyawan.Foto
+	}
+
 	return web.ToKaryawanDetailResponse(karyawan)
 }
 
