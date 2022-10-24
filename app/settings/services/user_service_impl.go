@@ -3,9 +3,9 @@ package services
 import (
 	"context"
 	"database/sql"
-	"esaku-project/app/auths/models/web"
-	"esaku-project/app/auths/repository"
 	"esaku-project/app/settings/models/domain"
+	web2 "esaku-project/app/settings/models/web"
+	"esaku-project/app/settings/repository"
 	"esaku-project/exceptions"
 	"esaku-project/helpers"
 	"esaku-project/types"
@@ -34,7 +34,7 @@ func NewUserServiceImpl(userRepository repository.UserRepository, db *sql.DB, va
 	}
 }
 
-func (service *UserServiceImpl) Update(ctx context.Context, request web.UserRequest) {
+func (service *UserServiceImpl) Update(ctx context.Context, request web2.UserRequest) {
 	err := service.Validate.Struct(request)
 	helpers.PanicIfError(err)
 
@@ -59,7 +59,7 @@ func (service *UserServiceImpl) Update(ctx context.Context, request web.UserRequ
 	service.UserRepository.Update(ctx, tx, user)
 }
 
-func (service *UserServiceImpl) UpdatePassword(ctx context.Context, request web.PasswordRequest) {
+func (service *UserServiceImpl) UpdatePassword(ctx context.Context, request web2.PasswordRequest) {
 	err := service.Validate.Struct(request)
 	helpers.PanicIfError(err)
 
@@ -87,7 +87,7 @@ func (service *UserServiceImpl) UpdatePassword(ctx context.Context, request web.
 	service.UserRepository.UpdatePassword(ctx, tx, user)
 }
 
-func (service *UserServiceImpl) FindById(ctx context.Context) web.UserResponse {
+func (service *UserServiceImpl) FindById(ctx context.Context) web2.UserResponse {
 	tx, err := service.Db.Begin()
 	defer helpers.CommitOrRollback(tx, err)
 
@@ -110,10 +110,10 @@ func (service *UserServiceImpl) FindById(ctx context.Context) web.UserResponse {
 		user.Foto = "https://" + AwsBucket + "." + "s3-" + AwsRegion + ".amazonaws.com/" + user.Foto
 	}
 
-	return web.ToUserResponse(user)
+	return web2.ToUserResponse(user)
 }
 
-func (service *UserServiceImpl) UploadImage(ctx context.Context, request web.UserUploadRequest) {
+func (service *UserServiceImpl) UploadImage(ctx context.Context, request web2.UserUploadRequest) {
 	err := service.Validate.Struct(request)
 	helpers.PanicIfError(err)
 

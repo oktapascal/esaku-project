@@ -16,6 +16,7 @@ func NewRouter(
 	aksesController controllers.HakAksesController,
 	loginController controllers2.LoginController,
 	menuController controllers.MenuController,
+	userController controllers.UserController,
 ) *mux.Router {
 	router := mux.NewRouter()
 	router.StrictSlash(true)
@@ -40,6 +41,7 @@ func NewRouter(
 		karyawanController,
 		aksesController,
 		menuController,
+		userController,
 	)
 
 	master := router.PathPrefix("/api/esaku-master").Subrouter()

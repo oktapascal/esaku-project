@@ -59,6 +59,10 @@ func main() {
 	menuService := services.NewMenuServiceImpl(kelompokMenuRepository, menuRepository, sqlServer, validate)
 	menuController := controllers.NewMenuControllerImpl(menuService)
 
+	userRepository := repository.NewUserRepositoryImpl()
+	userService := services.NewUserServiceImpl(userRepository, sqlServer, validate, awsS3)
+	userController := controllers.NewUserControllerImpl(userService)
+
 	router := routes.NewRouter(
 		middlewareAuthImpl,
 		kelompokMenuController,
@@ -68,6 +72,7 @@ func main() {
 		aksesController,
 		loginController,
 		menuController,
+		userController,
 	)
 
 	// CORS

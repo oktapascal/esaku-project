@@ -13,44 +13,52 @@ func InitializeSettingsRoutes(
 	karyawanController controllers.KaryawanController,
 	aksesController controllers.HakAksesController,
 	menuController controllers.MenuController,
+	userController controllers.UserController,
 ) {
 	// Kelompok Menu
-	router.HandleFunc("/kelompok-menu", kelompokMenuController.FindAll).Methods("GET")
-	router.HandleFunc("/kelompok-menu/{kodeKlp}", kelompokMenuController.FindById).Methods("GET")
-	router.HandleFunc("/kelompok-menu", kelompokMenuController.Save).Methods("POST")
-	router.HandleFunc("/kelompok-menu/{kodeKlp}", kelompokMenuController.Update).Methods("PUT")
-	router.HandleFunc("/kelompok-menu/{kodeKlp}", kelompokMenuController.Delete).Methods("DELETE")
+	router.HandleFunc("/v1/kelompok-menu", kelompokMenuController.FindAll).Methods("GET")
+	router.HandleFunc("/v1/kelompok-menu/{kodeKlp}", kelompokMenuController.FindById).Methods("GET")
+	router.HandleFunc("/v1/kelompok-menu", kelompokMenuController.Save).Methods("POST")
+	router.HandleFunc("/v1/kelompok-menu/{kodeKlp}", kelompokMenuController.Update).Methods("PUT")
+	router.HandleFunc("/v1/kelompok-menu/{kodeKlp}", kelompokMenuController.Delete).Methods("DELETE")
 
 	// Form
-	router.HandleFunc("/form", formController.FindAll).Methods("GET")
-	router.HandleFunc("/form/{kodeForm}", formController.FindById).Methods("GET")
-	router.HandleFunc("/form", formController.Save).Methods("POST")
-	router.HandleFunc("/form/{kodeForm}", formController.Update).Methods("PUT")
-	router.HandleFunc("/form/{kodeForm}", formController.Delete).Methods("DELETE")
+	router.HandleFunc("/v1/form", formController.FindAll).Methods("GET")
+	router.HandleFunc("/v1/form/{kodeForm}", formController.FindById).Methods("GET")
+	router.HandleFunc("/v1/form", formController.Save).Methods("POST")
+	router.HandleFunc("/v1/form/{kodeForm}", formController.Update).Methods("PUT")
+	router.HandleFunc("/v1/form/{kodeForm}", formController.Delete).Methods("DELETE")
 
 	// Unit
-	router.HandleFunc("/unit", unitController.FindAll).Methods("GET")
-	router.HandleFunc("/unit/{kodeUnit}", unitController.FindById).Methods("GET")
-	router.HandleFunc("/unit", unitController.Save).Methods("POST")
-	router.HandleFunc("/unit/{kodeUnit}", unitController.Update).Methods("PUT")
-	router.HandleFunc("/unit/{kodeUnit}", unitController.Delete).Methods("DELETE")
+	router.HandleFunc("/v1/unit", unitController.FindAll).Methods("GET")
+	router.HandleFunc("/v1/unit/{kodeUnit}", unitController.FindById).Methods("GET")
+	router.HandleFunc("/v1/unit", unitController.Save).Methods("POST")
+	router.HandleFunc("/v1/unit/{kodeUnit}", unitController.Update).Methods("PUT")
+	router.HandleFunc("/v1/unit/{kodeUnit}", unitController.Delete).Methods("DELETE")
 
 	//	Karyawan
-	router.HandleFunc("/karyawan", karyawanController.FindAll).Methods("GET")
-	router.HandleFunc("karyawan/{nik}", karyawanController.FindById).Methods("GET")
-	router.HandleFunc("/karyawan", karyawanController.Save).Methods("POST")
-	router.HandleFunc("/karyawan-upload", karyawanController.UploadImage).Methods("POST")
-	router.HandleFunc("/karyawan/{nik}", karyawanController.Update).Methods("PUT")
-	router.HandleFunc("/karyawan/{nik}", karyawanController.Delete).Methods("DELETE")
+	router.HandleFunc("/v1/karyawan", karyawanController.FindAll).Methods("GET")
+	router.HandleFunc("v1/karyawan/{nik}", karyawanController.FindById).Methods("GET")
+	router.HandleFunc("/v1/karyawan", karyawanController.Save).Methods("POST")
+	router.HandleFunc("/v1/karyawan-upload", karyawanController.UploadImage).Methods("POST")
+	router.HandleFunc("/v1/karyawan/{nik}", karyawanController.Update).Methods("PUT")
+	router.HandleFunc("/v1/karyawan/{nik}", karyawanController.Delete).Methods("DELETE")
 
 	//	Hak Akses
-	router.HandleFunc("/hak-akses", aksesController.FindAll).Methods("GET")
-	router.HandleFunc("/hak-akses/{nik}", aksesController.FindById).Methods("GET")
-	router.HandleFunc("/hak-akses", aksesController.Save).Methods("POST")
-	router.HandleFunc("/hak-akses/{nik}", aksesController.FindById).Methods("PUT")
-	router.HandleFunc("/hak-akses/{nik}", aksesController.Delete).Methods("DELETE")
+	router.HandleFunc("/v1/hak-akses", aksesController.FindAll).Methods("GET")
+	router.HandleFunc("/v1/hak-akses/{nik}", aksesController.FindById).Methods("GET")
+	router.HandleFunc("/v1/hak-akses", aksesController.Save).Methods("POST")
+	router.HandleFunc("/v1/hak-akses/{nik}", aksesController.FindById).Methods("PUT")
+	router.HandleFunc("/v1/hak-akses/{nik}", aksesController.Delete).Methods("DELETE")
 
 	//	MENU
-	router.HandleFunc("/menu/{kodeKlp}", menuController.FindById).Methods("GET")
-	router.HandleFunc("/menu", menuController.Save).Methods("POST")
+	router.HandleFunc("/v1/menu/{kodeKlp}", menuController.FindById).Methods("GET")
+	router.HandleFunc("/v1/menu", menuController.Save).Methods("POST")
+
+	// USER
+	router.HandleFunc("/v1/user/update-data", userController.Update).Methods("POST")
+	router.HandleFunc("/v1/user/update-password", userController.UpdatePassword).Methods("POST")
+	router.HandleFunc("/v1/user/upload", userController.UploadImage).Methods("POST")
+	router.HandleFunc("/v1/user/biodata", userController.FindById).Methods("GET")
+
 }
