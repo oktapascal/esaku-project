@@ -25,7 +25,7 @@ func NewJWTImpl(config configs.Config) *JWTImpl {
 }
 
 func (config *JWTImpl) GenerateAccessToken(login web.LoginResponse) (string, time.Time, error) {
-	expiration := time.Now().Add(1 * time.Hour)
+	expiration := time.Now().Add(8 * time.Hour)
 
 	return config.generateToken(login, expiration, []byte(config.GetJWTKey()))
 }
