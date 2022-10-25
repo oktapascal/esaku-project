@@ -1,6 +1,7 @@
 package services
 
 import (
+	"bytes"
 	"context"
 	"database/sql"
 	"esaku-project/app/settings/models/domain"
@@ -165,6 +166,22 @@ func (service *KaryawanServiceImpl) UploadImage(ctx context.Context, request web
 	token := ctx.Value("token").(*jwt.Token)
 	claims := token.Claims.(*types.Claims)
 
+	file, err := request.Foto.Open()
+	helpers.PanicIfError(err)
+
+	buff := new(bytes.Buffer)
+	_, err = buff.ReadFrom(file)
+	if err != nil {
+		panic(exceptions.NewErrorBadRequest(err.Error()))
+	}
+
+	bytesString := buff.Bytes()
+
+	_, err = helpers.CheckOnlyImage(bytesString)
+	if err != nil {
+		panic(exceptions.NewErrorBadRequest(err.Error()))
+	}
+
 	kodeLokasi := claims.KodeLokasi
 	karyawan, err := service.KaryawanRepository.FindById(ctx, tx, request.Nik, kodeLokasi)
 
@@ -177,9 +194,6 @@ func (service *KaryawanServiceImpl) UploadImage(ctx context.Context, request web
 		Key:    aws.String(fmt.Sprintf("dev/%s", karyawan.Foto)),
 	})
 
-	helpers.PanicIfError(err)
-
-	file, err := request.Foto.Open()
 	helpers.PanicIfError(err)
 
 	fileName := fmt.Sprintf("profile-%s-%s", request.Nik, request.Foto.Filename)
