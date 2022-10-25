@@ -86,3 +86,15 @@ func (controller *UnitControllerImpl) FindAll(writer http.ResponseWriter, reques
 
 	helpers.WriteToResponseBodyJson(writer, webResponse)
 }
+
+func (controller *UnitControllerImpl) Filter(writer http.ResponseWriter, request *http.Request) {
+	unitResponse := controller.UnitService.Filter(request.Context())
+
+	webResponse := helpers.JsonResponse{
+		Code:   http.StatusOK,
+		Status: "OK",
+		Data:   unitResponse,
+	}
+
+	helpers.WriteToResponseBodyJson(writer, webResponse)
+}

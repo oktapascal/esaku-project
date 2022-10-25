@@ -8,4 +8,5 @@ type KelompokMenuController interface {
 	Delete(writer http.ResponseWriter, request *http.Request)
 	FindById(writer http.ResponseWriter, request *http.Request)
 	FindAll(writer http.ResponseWriter, request *http.Request)
+	Filter(writer http.ResponseWriter, request *http.Request)
 }

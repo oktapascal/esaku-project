@@ -16,20 +16,22 @@ func NewHakAksesRepositoryImpl() *HakAksesRepositoryImpl {
 }
 
 func (repository *HakAksesRepositoryImpl) Save(ctx context.Context, tx *sql.Tx, akses domain.HakAkses) domain.HakAkses {
-	SQL := `insert into hakakses (kode_klp_menu, nik, status_admin, klp_akses, password)
-	values (@p1, @p2, @p3, @p4, @p5)`
+	SQL := `insert into hakakses (kode_klp_menu, nik, status_admin, klp_akses, password, path_view)
+	values (@p1, @p2, @p3, @p4, @p5, @p6)`
 
-	_, err := tx.ExecContext(ctx, SQL, akses.KodeKlp, akses.Nik, akses.StatusAdmin, akses.KelompokAkses, akses.Password)
+	_, err := tx.ExecContext(ctx, SQL, akses.KodeKlp, akses.Nik, akses.StatusAdmin,
+		akses.KelompokAkses, akses.Password, akses.DefaultProgram)
 	helpers.PanicIfError(err)
 
 	return akses
 }
 
 func (repository *HakAksesRepositoryImpl) Update(ctx context.Context, tx *sql.Tx, akses domain.HakAkses) domain.HakAkses {
-	SQL := `update hakakses set kode_klp_menu = @p1, status_admin = @p2, klp_akses = @p3
-	where nik = @p4`
+	SQL := `update hakakses set kode_klp_menu = @p1, status_admin = @p2, klp_akses = @p3, path_view = @p4
+	where nik = @p5`
 
-	_, err := tx.ExecContext(ctx, SQL, akses.KodeKlp, akses.StatusAdmin, akses.KelompokAkses, akses.Nik)
+	_, err := tx.ExecContext(ctx, SQL, akses.KodeKlp, akses.StatusAdmin, akses.KelompokAkses,
+		akses.DefaultProgram, akses.Nik)
 	helpers.PanicIfError(err)
 
 	return akses
@@ -43,7 +45,7 @@ func (repository *HakAksesRepositoryImpl) Delete(ctx context.Context, tx *sql.Tx
 }
 
 func (repository *HakAksesRepositoryImpl) FindById(ctx context.Context, tx *sql.Tx, nik string) (domain.HakAkses, error) {
-	SQL := `select a.nik, a.kode_klp_menu, a.status_admin, a.klp_akses, b.nama nama_klp, c.nama nama_karyawan
+	SQL := `select a.nik, a.kode_klp_menu, a.status_admin, a.klp_akses, a.path_view, b.nama nama_klp, c.nama nama_karyawan
 	from hakakses a
 	inner join menu_klp b on a.kode_klp_menu=b.kode_klp
 	inner join karyawan c on a.nik=c.nik
@@ -56,8 +58,8 @@ func (repository *HakAksesRepositoryImpl) FindById(ctx context.Context, tx *sql.
 
 	akses := domain.HakAkses{}
 	if rows.Next() {
-		err := rows.Scan(&akses.Nik, &akses.KodeKlp, &akses.StatusAdmin, &akses.KelompokAkses, &akses.KelompokMenu.Nama,
-			&akses.Karyawan.Nama)
+		err := rows.Scan(&akses.Nik, &akses.KodeKlp, &akses.StatusAdmin, &akses.KelompokAkses, &akses.DefaultProgram,
+			&akses.KelompokMenu.Nama, &akses.Karyawan.Nama)
 		helpers.PanicIfError(err)
 
 		return akses, nil

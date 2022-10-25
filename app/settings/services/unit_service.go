@@ -11,4 +11,5 @@ type UnitService interface {
 	Delete(ctx context.Context, kodeUnit string)
 	FindById(ctx context.Context, kodeUnit string) web.UnitResponse
 	FindAll(ctx context.Context) []web.UnitResponse
+	Filter(ctx context.Context) []web.FilterUnitResponse
 }

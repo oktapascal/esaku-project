@@ -219,3 +219,17 @@ func (service *KaryawanServiceImpl) UploadImage(ctx context.Context, request web
 
 	return web.ToKaryawanUploadResponse(fileName)
 }
+
+func (service *KaryawanServiceImpl) Filter(ctx context.Context) []web.FilterKaryawanResponse {
+	tx, err := service.Db.Begin()
+	defer helpers.CommitOrRollback(tx, err)
+
+	token := ctx.Value("token").(*jwt.Token)
+	claims := token.Claims.(*types.Claims)
+
+	kodeLokasi := claims.KodeLokasi
+
+	karyawans := service.KaryawanRepository.FindAll(ctx, tx, kodeLokasi)
+
+	return web.ToFilterKaryawanResponses(karyawans)
+}

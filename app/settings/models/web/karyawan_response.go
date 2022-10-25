@@ -2,6 +2,11 @@ package web
 
 import "esaku-project/app/settings/models/domain"
 
+type FilterKaryawanResponse struct {
+	Nik  string `json:"nik"`
+	Nama string `json:"nama"`
+}
+
 type KaryawanListResponse struct {
 	Nik      string `json:"nik"`
 	Nama     string `json:"nama"`
@@ -28,6 +33,23 @@ type KaryawanDetailResponse struct {
 
 type KaryawanUploadResponse struct {
 	Foto string `json:"file"`
+}
+
+func ToFilterKaryawanResponses(karyawans []domain.Karyawan) []FilterKaryawanResponse {
+	var karyawanResponses []FilterKaryawanResponse
+
+	for _, karyawan := range karyawans {
+		karyawanResponses = append(karyawanResponses, ToFilterKaryawanResponse(karyawan))
+	}
+
+	return karyawanResponses
+}
+
+func ToFilterKaryawanResponse(karyawan domain.Karyawan) FilterKaryawanResponse {
+	return FilterKaryawanResponse{
+		Nik:  karyawan.Nik,
+		Nama: karyawan.Nama,
+	}
 }
 
 func ToKaryawanListResponse(karyawan domain.Karyawan) KaryawanListResponse {

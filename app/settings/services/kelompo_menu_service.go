@@ -11,4 +11,5 @@ type KelompokMenuService interface {
 	Delete(ctx context.Context, kodeKlp string)
 	FindById(ctx context.Context, kodeKlp string) web.KelompokMenuResponse
 	FindAll(ctx context.Context) []web.KelompokMenuResponse
+	Filter(ctx context.Context) []web.FilterKelompokMenuResponse
 }

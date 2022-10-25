@@ -44,11 +44,12 @@ func (service *HakAksesServiceImpl) Save(ctx context.Context, request web.HakAks
 	}
 
 	akses := domain.HakAkses{
-		Password:      password,
-		KelompokAkses: request.KelompokAkses,
-		StatusAdmin:   request.StatusAdmin,
-		Karyawan:      karyawan,
-		KelompokMenu:  kelompokMenu,
+		Password:       password,
+		KelompokAkses:  request.KelompokAkses,
+		StatusAdmin:    request.StatusAdmin,
+		DefaultProgram: request.DefaultProgram,
+		Karyawan:       karyawan,
+		KelompokMenu:   kelompokMenu,
 	}
 
 	akses = service.HakAksesRepository.Save(ctx, tx, akses)
@@ -72,6 +73,7 @@ func (service *HakAksesServiceImpl) Update(ctx context.Context, request web.HakA
 	akses.KodeKlp = request.KelompokMenu
 	akses.StatusAdmin = request.StatusAdmin
 	akses.KelompokAkses = request.KelompokAkses
+	akses.DefaultProgram = request.DefaultProgram
 
 	akses = service.HakAksesRepository.Update(ctx, tx, akses)
 

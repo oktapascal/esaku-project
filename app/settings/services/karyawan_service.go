@@ -12,4 +12,5 @@ type KaryawanService interface {
 	FindById(ctx context.Context, nik string) web.KaryawanDetailResponse
 	FindAll(ctx context.Context) []web.KaryawanListResponse
 	UploadImage(ctx context.Context, request web.KaryawanUploadRequest) web.KaryawanUploadResponse
+	Filter(ctx context.Context) []web.FilterKaryawanResponse
 }

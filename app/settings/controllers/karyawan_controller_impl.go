@@ -114,3 +114,15 @@ func (controller *KaryawanControllerImpl) UploadImage(writer http.ResponseWriter
 
 	helpers.WriteToResponseBodyJson(writer, webResponse)
 }
+
+func (controller *KaryawanControllerImpl) Filter(writer http.ResponseWriter, request *http.Request) {
+	karyawanResponses := controller.KaryawanService.Filter(request.Context())
+
+	webResponse := helpers.JsonResponse{
+		Code:   http.StatusOK,
+		Status: "OK",
+		Data:   karyawanResponses,
+	}
+
+	helpers.WriteToResponseBodyJson(writer, webResponse)
+}

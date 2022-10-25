@@ -9,4 +9,5 @@ type KaryawanController interface {
 	FindById(writer http.ResponseWriter, request *http.Request)
 	FindAll(writer http.ResponseWriter, request *http.Request)
 	UploadImage(writer http.ResponseWriter, request *http.Request)
+	Filter(writer http.ResponseWriter, request *http.Request)
 }

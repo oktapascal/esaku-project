@@ -123,3 +123,16 @@ func (service *UnitServiceImpl) FindAll(ctx context.Context) []web.UnitResponse 
 
 	return web.ToUnitResponses(units)
 }
+
+func (service *UnitServiceImpl) Filter(ctx context.Context) []web.FilterUnitResponse {
+	tx, err := service.Db.Begin()
+	defer helpers.CommitOrRollback(tx, err)
+
+	token := ctx.Value("token").(*jwt.Token)
+	claims := token.Claims.(*types.Claims)
+
+	kodeLokasi := claims.KodeLokasi
+	units := service.UnitRepository.FindAll(ctx, tx, kodeLokasi)
+
+	return web.ToFilterUnitResponses(units)
+}

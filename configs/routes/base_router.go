@@ -54,7 +54,12 @@ func NewRouter(
 	InitializeReportRoutes(report)
 
 	filter := router.PathPrefix("/api/esaku-filter").Subrouter()
-	InitializeFilterRoutes(filter)
+	InitializeFilterRoutes(
+		filter,
+		unitController,
+		karyawanController,
+		kelompokMenuController,
+	)
 
 	return router
 }

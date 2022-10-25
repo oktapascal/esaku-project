@@ -96,3 +96,12 @@ func (service *KelompokMenuServiceImpl) FindAll(ctx context.Context) []web.Kelom
 
 	return web.ToKelompokMenuResponses(klpMenus)
 }
+
+func (service *KelompokMenuServiceImpl) Filter(ctx context.Context) []web.FilterKelompokMenuResponse {
+	tx, err := service.Db.Begin()
+	defer helpers.CommitOrRollback(tx, err)
+
+	klpMenus := service.KelompokMenuRepository.FindAll(ctx, tx)
+
+	return web.ToFilterKelompokMenuResponses(klpMenus)
+}

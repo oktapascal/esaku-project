@@ -88,3 +88,14 @@ func (controller *KelompokMenuControllerImpl) FindAll(writer http.ResponseWriter
 	}
 	helpers.WriteToResponseBodyJson(writer, webResponse)
 }
+
+func (controller *KelompokMenuControllerImpl) Filter(writer http.ResponseWriter, request *http.Request) {
+	klpMenuResponses := controller.KelompokMenuService.Filter(request.Context())
+
+	webResponse := helpers.JsonResponse{
+		Code:   http.StatusOK,
+		Status: "OK",
+		Data:   klpMenuResponses,
+	}
+	helpers.WriteToResponseBodyJson(writer, webResponse)
+}
