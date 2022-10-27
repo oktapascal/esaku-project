@@ -2,7 +2,9 @@ package routes
 
 import (
 	"esaku-project/app/settings/controllers"
+	"esaku-project/helpers"
 	"github.com/gorilla/mux"
+	"net/http"
 )
 
 func InitializeSettingsRoutes(
@@ -15,6 +17,14 @@ func InitializeSettingsRoutes(
 	menuController controllers.MenuController,
 	userController controllers.UserController,
 ) {
+	router.HandleFunc("/test", func(writer http.ResponseWriter, request *http.Request) {
+		json := map[string]string{
+			"status": "OK",
+		}
+
+		writer.WriteHeader(http.StatusOK)
+		helpers.WriteToResponseBodyJson(writer, json)
+	})
 	// Kelompok Menu
 	router.HandleFunc("/v1/kelompok-menu", kelompokMenuController.FindAll).Methods("GET")
 	router.HandleFunc("/v1/kelompok-menu/{kodeKlp}", kelompokMenuController.FindById).Methods("GET")
